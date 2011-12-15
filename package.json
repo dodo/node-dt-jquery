@@ -17,5 +17,5 @@
     "coffee-script": ">= 1.1.3"}
 , "licenses" : [
     { "type": "MIT" ,
-      "url": "http://github.com/dodo/node-dynamictemplate/raw/master/LICENSE"} ]
+      "url": "http://github.com/dodo/node-dt-jquery/raw/master/LICENSE"} ]
 }
