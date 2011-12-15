@@ -1,6 +1,8 @@
 
 # TODO i think this should work with asyncxml as well
 # FIXME  this should be in an own package
+# TODO listen on data and use innerHTML to create all dom elems at once
+#       http://blog.stevenlevithan.com/archives/faster-than-innerhtml
 
 jquerify = (tpl) ->
     tpl.xml._children = []
