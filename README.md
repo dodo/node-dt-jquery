@@ -19,11 +19,10 @@ todo
 
 dynamictemplate has a similar approach like [Backbone.js](http://documentcloud.github.com/backbone/) where you can choose your own backend of models, collections or, in this case, templates.
 
-
-Currently only the [JQuery adapter](https://github.com/dodo/node-dynamictemplate/blob/master/src/dynamictemplate-jquery.coffee) is available:
+## How this Adapter works:
 
 ```html
-<script src="dynamictemplate-jquery.browser.js"></script>
+<script src="dt-jquery.browser.js"></script>
 <scipt>
     var jquerify = window.dynamictemplate.jquerify; // get the jquery adapter
 </script>
