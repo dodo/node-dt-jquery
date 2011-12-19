@@ -4,7 +4,7 @@
 # TODO listen on data and use innerHTML to create all dom elems at once
 #       http://blog.stevenlevithan.com/archives/faster-than-innerhtml
 
-jquerify = (tpl) ->
+jqueryify = (tpl) ->
     tpl.xml._children = []
     tpl.on 'add', (el) ->
         el._children = [] unless el._jquery?
@@ -52,13 +52,13 @@ jquerify = (tpl) ->
 
 # exports
 
-module.exports = jquerify
+module.exports = jqueryify
 
 # browser support
 
 ( ->
     if @dynamictemplate?
-        @dynamictemplate.jquerify = jquerify
+        @dynamictemplate.jqueryify = jqueryify
     else
-        @dynamictemplate = {jquerify}
+        @dynamictemplate = {jqueryify}
 ).call window if process.title is 'browser'

@@ -24,7 +24,7 @@ dynamictemplate has a similar approach like [Backbone.js](http://documentcloud.g
 ```html
 <script src="dt-jquery.browser.js"></script>
 <scipt>
-    var jquerify = window.dynamictemplate.jquerify; // get the jquery adapter
+    var jqueryify = window.dynamictemplate.jqueryify; // get the jquery adapter
 </script>
 ```
 
