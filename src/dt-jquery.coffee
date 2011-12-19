@@ -21,11 +21,26 @@ jqueryify = (tpl) ->
                 el._jquery.append child
             delete el._children
 
+        if el._jquery_delay?
+            for delay in el._jquery_delay
+                delay?()
+            delete el._jquery_delay
+
         el.on 'newListener', (type) ->
             return if el._events?[type]?.length # dont bind two times for the same type
             el._jquery.bind type, ->
                 el.emit type, this, arguments...
                 return # dont return emit result (which is either true or false)
+
+    tpl.on 'text', (el, text) ->
+        return unless text?.length
+        callback = ->
+            el._jquery?.text(text)
+        # only when tag is ready
+        if el._jquery?
+            callback()
+        else
+            (el._jquery_delay ?= []).push callback
 
     tpl.on 'attr', (el, key, value) ->
         el._jquery?.attr key, value
