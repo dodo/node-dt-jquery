@@ -11,15 +11,17 @@ jqueryify = (tpl) ->
 
     tpl.on 'close', (el) ->
         el._jquery = $(el.toString())
-        if el.parent._children?
-            el.parent._children.push el._jquery
-        else
-            el.parent._jquery.append el._jquery
+        # insert all children jquery parts
         if el._children
             # wtf? jquery's append doesnt eat a list???
             for child in el._children
                 el._jquery.append child
             delete el._children
+        # insert into parent
+        if el.parent._children?
+            el.parent._children.push el._jquery
+        else
+            el.parent._jquery.append el._jquery
 
         if el._jquery_delay?
             for delay in el._jquery_delay
