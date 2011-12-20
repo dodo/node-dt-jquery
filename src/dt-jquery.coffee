@@ -33,7 +33,6 @@ jqueryify = (tpl) ->
                 return # dont return emit result (which is either true or false)
 
     tpl.on 'text', (el, text) ->
-        return unless text?.length
         callback = ->
             el._jquery?.text(text)
         # only when tag is ready
