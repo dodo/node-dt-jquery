@@ -8,12 +8,11 @@
 , "engines": {"node": ">= 0.4.x"}
 , "keywords": ["dt", "async", "dynamic", "event", "template", "generation", "stream", "browser", "jquery"]
 , "scripts": {
-    "preinstall": "#preinstall DO NOTHING",
-    "install": "node-waf configure build",
-    "update": "node-waf build"}
-, "dependencies": {
+    "pre-publish": "cake build"}
+, "devDependencies": {
     "browserify": "1.6.1",
     "scopify": ">= 0.1.1",
+    "muffin": ">= 0.2.6",
     "coffee-script": ">= 1.1.3"}
 , "licenses" : [
     { "type": "MIT" ,

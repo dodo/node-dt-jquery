@@ -1,2 +1,2 @@
 
-module.exports = require('./build/default/dt-jquery')
+module.exports = require('./lib/dt-jquery')
