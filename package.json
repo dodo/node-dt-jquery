@@ -8,7 +8,7 @@
 , "engines": {"node": ">= 0.4.x"}
 , "keywords": ["dt", "async", "dynamic", "event", "template", "generation", "stream", "browser", "jquery"]
 , "scripts": {
-    "pre-publish": "cake build"}
+    "prepublish": "cake build"}
 , "devDependencies": {
     "browserify": "1.6.1",
     "scopify": ">= 0.1.1",
