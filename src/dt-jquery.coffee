@@ -41,6 +41,9 @@ jqueryify = (tpl) ->
         delay.call el, ->
             el._jquery.text(text)
 
+    tpl.on 'raw', (el, html) ->
+        delay.call el, ->
+            el._jquery.html(html)
 
     tpl.on 'attr', (el, key, value) ->
         delay.call el, ->
