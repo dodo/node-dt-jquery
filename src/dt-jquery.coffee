@@ -5,13 +5,14 @@
 #       http://blog.stevenlevithan.com/archives/faster-than-innerhtml
 
 # delay or invoke job immediately
-delay = (el, job) ->
+delay = (job) ->
     # only when tag is ready
-    if el._jquery?
+    if @_jquery?
         do job
     else
-        el._jquery_delay ?= []
-        el._jquery_delay.push(job)
+        @_jquery_delay ?= []
+        @_jquery_delay.push(job)
+
 
 jqueryify = (tpl) ->
     tpl.xml._jquery = $()
@@ -24,7 +25,7 @@ jqueryify = (tpl) ->
                 do job
             delete el._jquery_delay
         # insert into parent
-        delay el.parent, ->
+        delay.call el.parent, ->
             if el.parent is tpl.xml
                 el.parent._jquery = el.parent._jquery.add(el._jquery)
             else
@@ -37,16 +38,16 @@ jqueryify = (tpl) ->
                 return # dont return emit result (which is either true or false)
 
     tpl.on 'text', (el, text) ->
-        delay el, ->
+        delay.call el, ->
             el._jquery.text(text)
 
 
     tpl.on 'attr', (el, key, value) ->
-        delay el, ->
+        delay.call el, ->
             el._jquery.attr(key, value)
 
     tpl.on 'attr:remove', (el, key) ->
-        delay el, ->
+        delay.call el, ->
             el._jquery.removeAttr(key)
 
     tpl.on 'remove', (el) ->
