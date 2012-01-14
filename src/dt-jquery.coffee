@@ -77,6 +77,14 @@ jqueryify = (tpl) ->
             tag._jquery.attr(key)
         else if type is 'text'
             tag._jquery.text()
+        else if type is 'tag'
+#             $(key).data('dt-jquery')
+            if key._jquery?
+                key
+            else
+                # assume this is allready a jquery object
+                {_jquery:key}
+#                 $(key).data('dt-jquery') or {_jquery:key}
 
     return tpl
 
