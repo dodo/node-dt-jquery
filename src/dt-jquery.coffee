@@ -4,6 +4,18 @@
 # TODO listen on data and use innerHTML to create all dom elems at once
 #       http://blog.stevenlevithan.com/archives/faster-than-innerhtml
 
+# requestAnimationFrame shim
+nextAnimationFrame = do ->
+    last = 0
+    request = window.requestAnimationFrame
+    for vendor in ["webkit", "moz", "o", "ms"]
+        break if (request ?= window["#{vendor}RequestAnimationFrame"])
+    return request ? (callback) ->
+        cur = new Date().getTime()
+        time = Math.max(0, 16 - cur + last)
+        setTimeout(callback, time)
+
+
 # delay or invoke job immediately
 delay = (job) ->
     # only when tag is ready
@@ -29,9 +41,10 @@ jqueryify = (tpl) ->
         delay.call parent, ->
             if parent is tpl.xml
                 parent._jquery = parent._jquery.add(el._jquery)
-#                 parent._jquery.data('dt-jquery', parent)
+                parent._jquery.data('dt-jquery', parent)
             else
-                parent._jquery.append(el._jquery)
+                nextAnimationFrame ->
+                    parent._jquery.append(el._jquery)
 
     tpl.on 'close', (el) ->
         el._jquery ?= $(el.toString())
@@ -50,7 +63,8 @@ jqueryify = (tpl) ->
 
     tpl.on 'raw', (el, html) ->
         delay.call el, ->
-            el._jquery.html(html)
+            nextAnimationFrame ->
+                el._jquery.html(html)
 
     tpl.on 'show', (el) ->
         delay.call el, ->
@@ -70,7 +84,8 @@ jqueryify = (tpl) ->
 
     tpl.on 'replace', (el, tag) ->
         delay.call el, ->
-            el._jquery.replaceWith(tag._jquery ? tag)
+            nextAnimationFrame ->
+                el._jquery.replaceWith(tag._jquery ? tag)
 
     tpl.on 'remove', (el) ->
         el._jquery?.remove()
