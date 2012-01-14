@@ -41,7 +41,7 @@ jqueryify = (tpl) ->
         delay.call parent, ->
             if parent is tpl.xml
                 parent._jquery = parent._jquery.add(el._jquery)
-                parent._jquery.data('dt-jquery', parent)
+#                 parent._jquery.data('dt-jquery', parent)
             else
                 nextAnimationFrame ->
                     parent._jquery.append(el._jquery)
