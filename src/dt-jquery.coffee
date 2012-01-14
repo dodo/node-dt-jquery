@@ -14,22 +14,29 @@ delay = (job) ->
         @_jquery_delay.push(job)
 
 
+# invoke all delayed jquery work
+release = () ->
+    if @_jquery_delay?
+        for job in @_jquery_delay
+            do job
+        delete @_jquery_delay
+
+
 jqueryify = (tpl) ->
-    tpl.xml._jquery = $()
+
+    tpl.on 'add', (parent, el) ->
+        # insert into parent
+        delay.call parent, ->
+            if parent is tpl.xml
+                parent._jquery = parent._jquery.add(el._jquery)
+#                 parent._jquery.data('dt-jquery', parent)
+            else
+                parent._jquery.append(el._jquery)
 
     tpl.on 'close', (el) ->
-        el._jquery = $(el.toString())
-        # invoke all delayed jquery work
-        if el._jquery_delay?
-            for job in el._jquery_delay
-                do job
-            delete el._jquery_delay
-        # insert into parent
-        delay.call el.parent, ->
-            if el.parent is tpl.xml
-                el.parent._jquery = el.parent._jquery.add(el._jquery)
-            else
-                el.parent._jquery.append(el._jquery)
+        el._jquery ?= $(el.toString())
+#         el._jquery.data('dt-jquery', el)
+        release.call el
 
         el.on 'newListener', (type) ->
             return if el._events?[type]?.length # dont bind two times for the same type
@@ -57,7 +64,11 @@ jqueryify = (tpl) ->
         el._jquery?.remove()
 
     tpl.on 'end', ->
+        tpl.xml._jquery = $()
+#         tpl.xl._jquery.data('dt-jquery', tpl.xml)
+        release.call tpl.xml
         tpl.jquery = tpl.xml._jquery
+#         tpl.jquery.data('dt-jquery', tpl)
 
     old_query = tpl.xml.query
     tpl.xml.query = (type, tag, key) ->
