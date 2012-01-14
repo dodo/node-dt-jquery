@@ -52,6 +52,14 @@ jqueryify = (tpl) ->
         delay.call el, ->
             el._jquery.html(html)
 
+    tpl.on 'show', (el) ->
+        delay.call el, ->
+            el._jquery.show()
+
+    tpl.on 'hide', (el) ->
+        delay.call el, ->
+            el._jquery.hide()
+
     tpl.on 'attr', (el, key, value) ->
         delay.call el, ->
             el._jquery.attr(key, value)
