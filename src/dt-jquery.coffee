@@ -68,6 +68,10 @@ jqueryify = (tpl) ->
         delay.call el, ->
             el._jquery.removeAttr(key)
 
+    tpl.on 'replace', (el, tag) ->
+        delay.call el, ->
+            el._jquery.replaceWith(tag._jquery ? tag)
+
     tpl.on 'remove', (el) ->
         el._jquery?.remove()
 
