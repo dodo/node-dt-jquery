@@ -37,7 +37,7 @@ tpl.ready(function () {
 ```javascript
 tpl = jqueryify(new dynamictemplate.Template)
 ```
-Expects a fresh [Δt](http://dodo.github.com/node-dynamictemplate/) template instance (fresh means, instantiated in the same tick to prevent event loss).
+Expects a fresh [Δt](http://github.com/dodo/node-dynamictemplate) template instance (fresh means, instantiated in the same tick to prevent event loss).
 
 It just simply listen for a bunch of events to use jQuery for DOM manipulation.
 
