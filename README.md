@@ -1,7 +1,8 @@
-# [Δt jquery adapter](http://dodo.github.com/node-dt-jquery/)
+# [Δt jQuery Adapter](https://github.com/dodo/node-dt-jquery/)
 
-This is an jQuery adapter for [dynamictemplate](http://dodo.github.com/node-dynamictemplate/).
-It listen on the template events and writes to the DOM.
+This is an [jQuery](http://jquery.com/) Adapter for [Δt](http://dodo.github.com/node-dynamictemplate/).
+
+It listen on the [template events](http://dodo.github.com/node-asyncxml/) and writes to the DOM.
 
 → [Check out the demo!](http://dodo.github.com/node-dynamictemplate/example/list.html)
 
@@ -10,14 +11,6 @@ It listen on the template events and writes to the DOM.
 ```bash
 $ npm install dt-jquery
 ```
-
-## Documentation
-
-todo
-
-### Adapters
-
-dynamictemplate has a similar approach like [Backbone.js](http://documentcloud.github.com/backbone/) where you can choose your own backend of models, collections or, in this case, templates.
 
 ## How this Adapter works:
 
@@ -32,9 +25,30 @@ Just throw your template in and add it to the DOM when it's ready:
 
 ```javascript
 var tpl = jquerify(template(mydata));
-tpl.on('end', function () {
+tpl.ready(function () {
     $('.container').append(tpl.jquery);
 });
 ```
 
+## Documentation
 
+### jqueryify(tpl)
+
+```javascript
+tpl = jqueryify(new dynamictemplate.Template)
+```
+Expects a fresh [Δt](http://dodo.github.com/node-dynamictemplate/) template instance (fresh means, instantiated in the same tick to prevent event loss).
+
+It just simply listen for a bunch of events to use jQuery for DOM manipulation.
+
+Uses [requestAnimationFrame](http://paulirish.com/2011/requestanimationframe-for-smart-animating/) for heavy DOM manipulation like node insertion and node deletion.
+
+----
+
+Overrides the `query` method of the [async XML Builder](http://dodo.github.com/node-asyncxml/).
+
+For query type `text` it returns the result of [jQuery.text](http://api.jquery.com/text/).
+
+For query type `attr` it returns the result of [jQuery.attr](http://api.jquery.com/attr/).
+
+For query type `tag` it returns a dummy object that it will receive again on an `add` event.
