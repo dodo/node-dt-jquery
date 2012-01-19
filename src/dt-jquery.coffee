@@ -85,7 +85,13 @@ jqueryify = (tpl) ->
     tpl.on 'replace', (el, tag) ->
         delay.call el, ->
             nextAnimationFrame ->
-                el._jquery.replaceWith(tag._jquery ? tag)
+                _jquery = tag._jquery ? tag
+                return unless _jquery?.length > 0
+                el._jquery.replaceWith(_jquery)
+                # replaceWith isnt inplace
+                el._jquery = _jquery
+                if el is tpl.xml
+                    el.jquery = _jquery
 
     tpl.on 'remove', (el) ->
         el._jquery?.remove()
