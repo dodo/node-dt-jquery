@@ -5,7 +5,7 @@
 #       http://blog.stevenlevithan.com/archives/faster-than-innerhtml
 
 # requestAnimationFrame shim
-_nextAnimationFrame = do ->
+requestAnimationFrame = do ->
     last = 0
     request = window.requestAnimationFrame
     for vendor in ["webkit", "moz", "o", "ms"]
@@ -22,7 +22,7 @@ nextAnimationFrame = (cb) ->
     unless frame_set
         frame_set = yes
         next = ->
-            _nextAnimationFrame ->
+            requestAnimationFrame ->
                 work_frame_queue()
                 if frame_queue.length
                     next()
