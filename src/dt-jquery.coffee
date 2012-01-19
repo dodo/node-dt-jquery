@@ -16,19 +16,13 @@ requestAnimationFrame = do ->
         setTimeout(callback, time)
 
 frame_queue = []
-frame_set = no
 nextAnimationFrame = (cb) ->
     frame_queue.push (cb)
-    return unless frame_set
-    frame_set = yes
     next = ->
         requestAnimationFrame ->
             work_frame_queue()
-            if frame_queue.length
-                next()
-            else
-                frame_set = no
-    next()
+            do next if frame_queue.length
+    do next if frame_queue.length is 1
 
 work_frame_queue = ->
     t1 = t2 = new Date().getTime()
