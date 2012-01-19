@@ -5,7 +5,7 @@
 #       http://blog.stevenlevithan.com/archives/faster-than-innerhtml
 
 # requestAnimationFrame shim
-nextAnimationFrame = do ->
+_nextAnimationFrame = do ->
     last = 0
     request = window.requestAnimationFrame
     for vendor in ["webkit", "moz", "o", "ms"]
@@ -15,6 +15,30 @@ nextAnimationFrame = do ->
         time = Math.max(0, 16 - cur + last)
         setTimeout(callback, time)
 
+frame_queue = []
+frame_set = no
+nextAnimationFrame = (cb) ->
+    frame_queue.push (cb)
+    unless frame_set
+        frame_set = yes
+        next = ->
+            _nextAnimationFrame ->
+                work_frame_queue()
+                if frame_queue.length
+                    next()
+                else
+                    frame_set = no
+        next()
+
+work_frame_queue = ->
+    t1 = t2 = new Date().getTime()
+    n = 0
+    while frame_queue.length && t2 - t1 < 25
+        cb = frame_queue.shift()
+        cb?()
+        n++
+        t2 = new Date().getTime()
+    console.log "Worked", n, "queued callbacks in", t2 - t1
 
 # delay or invoke job immediately
 delay = (job) ->
