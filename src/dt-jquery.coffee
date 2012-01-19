@@ -19,16 +19,16 @@ frame_queue = []
 frame_set = no
 nextAnimationFrame = (cb) ->
     frame_queue.push (cb)
-    unless frame_set
-        frame_set = yes
-        next = ->
-            requestAnimationFrame ->
-                work_frame_queue()
-                if frame_queue.length
-                    next()
-                else
-                    frame_set = no
-        next()
+    return unless frame_set
+    frame_set = yes
+    next = ->
+        requestAnimationFrame ->
+            work_frame_queue()
+            if frame_queue.length
+                next()
+            else
+                frame_set = no
+    next()
 
 work_frame_queue = ->
     t1 = t2 = new Date().getTime()
