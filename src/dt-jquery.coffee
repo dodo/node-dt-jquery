@@ -38,7 +38,6 @@ work_frame_queue = ->
         cb?()
         n++
         t2 = new Date().getTime()
-    console.log "Worked", n, "queued callbacks in", t2 - t1
 
 # delay or invoke job immediately
 delay = (job) ->
