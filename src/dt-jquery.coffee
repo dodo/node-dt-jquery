@@ -27,7 +27,7 @@ nextAnimationFrame = (cb) ->
 work_frame_queue = ->
     t1 = t2 = new Date().getTime()
     n = 0
-    while frame_queue.length && t2 - t1 < 25
+    while frame_queue.length && t2 - t1 < 5
         cb = frame_queue.shift()
         cb?()
         n++
