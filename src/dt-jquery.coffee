@@ -1,19 +1,9 @@
+{ requestAnimationFrame } = require 'request-animation-frame'
 
 # TODO i think this should work with asyncxml as well
 # TODO use requestAnimationFrame to update dom
 # TODO listen on data and use innerHTML to create all dom elems at once
 #       http://blog.stevenlevithan.com/archives/faster-than-innerhtml
-
-# requestAnimationFrame shim
-requestAnimationFrame = do ->
-    last = 0
-    request = window.requestAnimationFrame
-    for vendor in ["webkit", "moz", "o", "ms"]
-        break if (request ?= window["#{vendor}RequestAnimationFrame"])
-    return request ? (callback) ->
-        cur = new Date().getTime()
-        time = Math.max(0, 16 - cur + last)
-        setTimeout(callback, time)
 
 frame_queue = []
 nextAnimationFrame = (cb) ->
