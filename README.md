@@ -2,7 +2,7 @@
 
 This is an [jQuery](http://jquery.com/) Adapter for [Δt](http://dodo.github.com/node-dynamictemplate/).
 
-It listen on the [template events](http://dodo.github.com/node-asyncxml/) and writes to the DOM.
+It listen on the [template events](http://dodo.github.com/node-asyncxml/#section-4) and writes to the DOM.
 
 → [Check out the demo!](http://dodo.github.com/node-dynamictemplate/example/list.html)
 
@@ -37,7 +37,7 @@ tpl.ready(function () {
 ```javascript
 tpl = jqueryify(new dynamictemplate.Template)
 ```
-Expects a fresh [Δt](http://github.com/dodo/node-dynamictemplate) template instance (fresh means, instantiated in the same tick to prevent event loss).
+Expects a fresh [Δt](http://dodo.github.com/node-dynamictemplate/) [template instance](http://dodo.github.com/node-dynamictemplate/doc.html) (fresh means, instantiated in the same tick to prevent event loss).
 
 It just simply listen for a bunch of events to use jQuery for DOM manipulation.
 
@@ -45,7 +45,7 @@ Uses [requestAnimationFrame](http://paulirish.com/2011/requestanimationframe-for
 
 ----
 
-Overrides the `query` method of the [async XML Builder](http://dodo.github.com/node-asyncxml/).
+Overrides the `query` method of the [async XML Builder](http://dodo.github.com/node-asyncxml/#section-3-1).
 
 For query type `text` it returns the result of [jQuery.text](http://api.jquery.com/text/).
 
