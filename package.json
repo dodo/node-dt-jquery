@@ -1,6 +1,6 @@
 { "name": "dt-jquery"
 , "description": "Δt jquery adapter - async & dynamic templating engine"
-, "version": "0.2.4"
+, "version": "0.2.5"
 , "homepage": "https://github.com/dodo/node-dt-jquery"
 , "author": "dodo (https://github.com/dodo)"
 , "repository": {"type": "git", "url": "git://github.com/dodo/node-dt-jquery.git"}
