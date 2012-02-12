@@ -10,7 +10,7 @@
 , "scripts": {
     "prepublish": "cake build"}
 , "dependencies": {
-    "request-animation-frame": ">= 0.0.1"}
+    "animation": ">= 0.0.1"}
 , "devDependencies": {
     "browserify": "1.6.1",
     "scopify": ">= 0.2.1",

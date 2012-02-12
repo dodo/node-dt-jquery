@@ -1,24 +1,20 @@
-{ requestAnimationFrame } = require 'request-animation-frame'
+{ Animation } = require 'animation'
 
 # TODO i think this should work with asyncxml as well
-# TODO use requestAnimationFrame to update dom
 # TODO listen on data and use innerHTML to create all dom elems at once
 #       http://blog.stevenlevithan.com/archives/faster-than-innerhtml
 
-frame_queue = []
-nextAnimationFrame = (cb) ->
-    frame_queue.push (cb)
-    next = ->
-        requestAnimationFrame ->
-            work_frame_queue()
-            do next if frame_queue.length
-    do next if frame_queue.length is 1
+# TODO listen for dom events to know when a dom manipulation is ready
+# TODO mit canvas tag kommt man direkt auf die browser render ticks.
 
-work_frame_queue = ->
-    t1 = t2 = new Date().getTime()
-    while frame_queue.length && t2 - t1 < 5
-        (frame_queue.shift())?()
-        t2 = new Date().getTime()
+animation = new Animation
+    execution:'5ms'
+    timeout:'120ms'
+    toggle:on
+
+nextAnimationFrame = (callback) ->
+    animation.push   (callback)
+
 
 # delay or invoke job immediately
 delay = (job) ->
@@ -39,6 +35,7 @@ release = () ->
 
 
 jqueryify = (tpl) ->
+    animation.start()
 
     tpl.on 'add', (parent, el) ->
         # insert into parent
