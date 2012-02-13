@@ -8,8 +8,12 @@
 # TODO mit canvas tag kommt man direkt auf die browser render ticks.
 
 
+removed = (el) ->
+    el.closed is "removed"
+
 # delay or invoke job immediately
 delay = (job) ->
+    return if removed this
     # only when tag is ready
     if @_jquery?
         do job
@@ -44,7 +48,7 @@ jqueryify = (tpl) ->
 #                 parent._jquery.data('dt-jquery', parent)
             else
                 nextAnimationFrame ->
-                    parent._jquery.append(el._jquery)
+                    parent._jquery?.append(el._jquery)
 
     tpl.on 'close', (el) ->
         el._jquery ?= $(el.toString())
@@ -64,7 +68,7 @@ jqueryify = (tpl) ->
     tpl.on 'raw', (el, html) ->
         delay.call el, ->
             nextAnimationFrame ->
-                el._jquery.html(html)
+                el._jquery?.html(html)
 
     tpl.on 'show', (el) ->
         delay.call el, ->
@@ -85,6 +89,7 @@ jqueryify = (tpl) ->
     tpl.on 'replace', (el, tag) ->
         delay.call el, ->
             nextAnimationFrame ->
+                return if removed el
                 _jquery = tag._jquery ? tag
                 return unless _jquery?.length > 0
                 el._jquery.replaceWith(_jquery)
@@ -94,7 +99,9 @@ jqueryify = (tpl) ->
                     el.jquery = _jquery
 
     tpl.on 'remove', (el) ->
-        el._jquery?.remove()
+        delay.call el.parent, ->
+            el._jquery?.remove()
+            delete el._jquery
 
     tpl.on 'end', ->
         tpl.xml._jquery = $()
