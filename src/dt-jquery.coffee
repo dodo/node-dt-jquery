@@ -32,10 +32,10 @@ release = () ->
 
 jqueryify = (tpl) ->
     animation = new Animation
+        timeoutexecution:'50ms'
         execution:'5ms'
-        timeout:'120ms'
+        timeout:'100ms'
         toggle:on
-
     nextAnimationFrame = (callback) ->
         animation.push   (callback)
     animation.start()
