@@ -36,8 +36,6 @@ jqueryify = (tpl) ->
         execution:'5ms'
         timeout:'100ms'
         toggle:on
-    nextAnimationFrame = (callback) ->
-        animation.push   (callback)
     animation.start()
 
     tpl.on 'add', (parent, el) ->
@@ -47,7 +45,7 @@ jqueryify = (tpl) ->
                 parent._jquery = parent._jquery.add(el._jquery)
 #                 parent._jquery.data('dt-jquery', parent)
             else
-                nextAnimationFrame ->
+                animation.push ->
                     parent._jquery?.append(el._jquery)
 
     tpl.on 'close', (el) ->
@@ -67,7 +65,7 @@ jqueryify = (tpl) ->
 
     tpl.on 'raw', (el, html) ->
         delay.call el, ->
-            nextAnimationFrame ->
+            animation.push ->
                 el._jquery?.html(html)
 
     tpl.on 'show', (el) ->
@@ -88,7 +86,7 @@ jqueryify = (tpl) ->
 
     tpl.on 'replace', (el, tag) ->
         delay.call el, ->
-            nextAnimationFrame ->
+            animation.push ->
                 return if removed el
                 _jquery = tag._jquery ? tag
                 return unless _jquery?.length > 0
