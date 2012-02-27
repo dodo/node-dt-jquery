@@ -78,11 +78,10 @@ jqueryify = (tpl) ->
 
     tpl.on 'attr', (el, key, value) ->
         delay.call el, ->
-            el._jquery.attr(key, value)
-
-    tpl.on 'attr:remove', (el, key) ->
-        delay.call el, ->
-            el._jquery.removeAttr(key)
+            if value is undefined
+                el._jquery.removeAttr(key)
+            else
+                el._jquery.attr(key, value)
 
     tpl.on 'replace', (el, tag) ->
         delay.call el, ->
