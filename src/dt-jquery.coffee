@@ -44,9 +44,16 @@ jqueryify = (tpl) ->
             if parent is tpl.xml
                 parent._jquery = parent._jquery.add(el._jquery)
 #                 parent._jquery.data('dt-jquery', parent)
+#                 console.error "ready!", el.name, el._jquery_ready
+                el._jquery_ready?()
+                el._jquery_ready = yes
             else
                 animation.push ->
                     parent._jquery?.append(el._jquery)
+                    # FIXME listen on dom insertion event
+#                     console.error "ready!", el.name, el._jquery_ready
+                    el._jquery_ready?()
+                    el._jquery_ready = yes
 
     tpl.on 'close', (el) ->
         el._jquery ?= $(el.toString())
@@ -122,6 +129,17 @@ jqueryify = (tpl) ->
                 # assume this is allready a jquery object
                 {_jquery:key}
 #                 $(key).data('dt-jquery') or {_jquery:key}
+
+    tpl.register 'ready', (tag, next) ->
+#         console.error "ready?", tag.name, tag._jquery_ready
+        # when tag is already in the dom its fine,
+        #  else wait until it is inserted into dom
+        if tag._jquery_ready is yes
+            next(tag)
+        else
+            tag._jquery_ready = ->
+                next(tag)
+
 
     return tpl
 
