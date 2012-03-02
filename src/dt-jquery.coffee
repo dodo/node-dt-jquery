@@ -1,6 +1,12 @@
 { Animation } = require 'animation'
 
-# TODO i think this should work with asyncxml as well
+EVENTS = [
+    'add', 'close', 'end'
+    'show', 'hide'
+    'attr','text', 'raw'
+    'remove', 'replace'
+]
+
 # TODO listen on data and use innerHTML to create all dom elems at once
 #       http://blog.stevenlevithan.com/archives/faster-than-innerhtml
 
@@ -30,32 +36,71 @@ release = () ->
         delete @_jquery_delay
 
 
-jqueryify = (tpl) ->
-    animation = new Animation
-        timeoutexecution:'50ms'
-        execution:'5ms'
-        timeout:'100ms'
-        toggle:on
-    animation.start()
+class JQueryAdapter
+    constructor: (@template, opts = {}) ->
+        @builder = @template.xml ? @template
+        # defaults
+        opts.timeoutexecution ?= '20ms'
+        opts.execution        ?= '4ms'
+        opts.timeout          ?= '120ms'
+        opts.toggle           ?= on
+        # init requestAnimationFrame handler
+        @animation = new Animation(opts)
+        @animation.start()
+        @initialize()
 
-    tpl.on 'add', (parent, el) ->
+    initialize: () ->
+        do @listen
+        # override query
+        old_query = @builder.query
+        @builder.query = (type, tag, key) ->
+            return old_query.call(this, type, tag, key) unless tag._jquery?
+            if type is 'attr'
+                tag._jquery.attr(key)
+            else if type is 'text'
+                tag._jquery.text()
+            else if type is 'tag'
+#                 $(key).data('dt-jquery')
+                if key._jquery?
+                    key
+                else
+                    # assume this is allready a jquery object
+                    {_jquery:key}
+#                     $(key).data('dt-jquery') or {_jquery:key}
+        # register ready handler
+        @template.register 'ready', (tag, next) ->
+            # when tag is already in the dom its fine,
+            #  else wait until it is inserted into dom
+            if tag._jquery_ready is yes
+                next(tag)
+            else
+                tag._jquery_ready = ->
+                    next(tag)
+
+    listen: () ->
+        EVENTS.forEach (event) =>
+            @template.on(event, this["on#{event}"].bind(this))
+
+    # eventlisteners
+
+    onadd: (parent, el) ->
         # insert into parent
-        delay.call parent, ->
-            if parent is tpl.xml
+        delay.call parent, =>
+            if parent is @builder
                 parent._jquery = parent._jquery.add(el._jquery)
 #                 parent._jquery.data('dt-jquery', parent)
 #                 console.error "ready!", el.name, el._jquery_ready
                 el._jquery_ready?()
                 el._jquery_ready = yes
             else
-                animation.push ->
+                @animation.push ->
                     parent._jquery?.append(el._jquery)
                     # FIXME listen on dom insertion event
 #                     console.error "ready!", el.name, el._jquery_ready
                     el._jquery_ready?()
                     el._jquery_ready = yes
 
-    tpl.on 'close', (el) ->
+    onclose: (el) ->
         el._jquery ?= $(el.toString())
 #         el._jquery.data('dt-jquery', el)
         release.call el
@@ -66,85 +111,63 @@ jqueryify = (tpl) ->
                 el.emit type, this, arguments...
                 return # dont return emit result (which is either true or false)
 
-    tpl.on 'text', (el, text) ->
+    ontext: (el, text) ->
         delay.call el, ->
             el._jquery.text(text)
 
-    tpl.on 'raw', (el, html) ->
-        delay.call el, ->
-            animation.push ->
+    onraw: (el, html) ->
+        delay.call el, =>
+            @animation.push ->
                 el._jquery?.html(html)
 
-    tpl.on 'show', (el) ->
+    onshow: (el) ->
         delay.call el, ->
             el._jquery.show()
 
-    tpl.on 'hide', (el) ->
+    onhide: (el) ->
         delay.call el, ->
             el._jquery.hide()
 
-    tpl.on 'attr', (el, key, value) ->
+    onattr: (el, key, value) ->
         delay.call el, ->
             if value is undefined
                 el._jquery.removeAttr(key)
             else
                 el._jquery.attr(key, value)
 
-    tpl.on 'replace', (el, tag) ->
-        delay.call el, ->
-            animation.push ->
+    onreplace: (el, tag) ->
+        delay.call el, =>
+            @animation.push =>
                 return if removed el
                 _jquery = tag._jquery ? tag
                 return unless _jquery?.length > 0
                 el._jquery.replaceWith(_jquery)
                 # replaceWith isnt inplace
                 el._jquery = _jquery
-                if el is tpl.xml
+                if el is @builder
                     el.jquery = _jquery
 
-    tpl.on 'remove', (el) ->
+    onremove: (el) ->
         delay.call el.parent, ->
             el._jquery?.remove()
             delete el._jquery
 
-    tpl.on 'end', ->
-        tpl.xml._jquery = $()
-#         tpl.xl._jquery.data('dt-jquery', tpl.xml)
-        release.call tpl.xml
-        tpl.jquery = tpl.xml._jquery
-#         tpl.jquery.data('dt-jquery', tpl)
-
-    old_query = tpl.xml.query
-    tpl.xml.query = (type, tag, key) ->
-        return old_query.call(this, type, tag, key) unless tag._jquery?
-        if type is 'attr'
-            tag._jquery.attr(key)
-        else if type is 'text'
-            tag._jquery.text()
-        else if type is 'tag'
-#             $(key).data('dt-jquery')
-            if key._jquery?
-                key
-            else
-                # assume this is allready a jquery object
-                {_jquery:key}
-#                 $(key).data('dt-jquery') or {_jquery:key}
-
-    tpl.register 'ready', (tag, next) ->
-#         console.error "ready?", tag.name, tag._jquery_ready
-        # when tag is already in the dom its fine,
-        #  else wait until it is inserted into dom
-        if tag._jquery_ready is yes
-            next(tag)
-        else
-            tag._jquery_ready = ->
-                next(tag)
+    onend: () ->
+        @builder._jquery = $()
+#         @builder._jquery.data('dt-jquery', @template.xml)
+        release.call @builder
+        @template.jquery = @builder._jquery
+#         @template.jquery.data('dt-jquery', tpl)
 
 
+
+jqueryify = (tpl, opts) ->
+    new JQueryAdapter(tpl, opts)
     return tpl
 
 # exports
 
+jqueryify.Adapter = JQueryAdapter
 module.exports = jqueryify
 
 # browser support
