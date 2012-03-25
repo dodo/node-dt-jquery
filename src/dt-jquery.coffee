@@ -65,7 +65,13 @@ class JQueryAdapter
                     key
                 else
                     # assume this is allready a jquery object
-                    {_jquery:key}
+                    domel = key[0]
+                    attrs = {}
+                    for attr in domel.attributes
+                        attrs[attr.name] = attr.value
+                    new @builder.Tag domel.nodeName.toLowerCase(), attrs, ->
+                        @_jquery = key
+                        @end()
 #                     $(key).data('dt-jquery') or {_jquery:key}
         # register ready handler
         @template.register 'ready', (tag, next) ->
@@ -86,22 +92,34 @@ class JQueryAdapter
     onadd: (parent, el) ->
         # insert into parent
         delay.call parent, =>
-            if parent is @builder
+            if parent is parent.builder and parent._jquery.parent().length is 0
                 parent._jquery = parent._jquery.add(el._jquery)
 #                 parent._jquery.data('dt-jquery', parent)
 #                 console.error "ready!", el.name, el._jquery_ready
                 el._jquery_ready?()
                 el._jquery_ready = yes
             else
-                @animation.push ->
-                    parent._jquery?.append(el._jquery)
+                done = => @animation.push ->
+                    if parent is parent.builder
+                        parent._jquery.parent().append(el._jquery)
+                    else
+                        for e in el._jquery ? []
+                            parent._jquery?.append(e)
                     # FIXME listen on dom insertion event
 #                     console.error "ready!", el.name, el._jquery_ready
                     el._jquery_ready?()
                     el._jquery_ready = yes
+                # delay til end if el is a builder
+                if el is el.builder
+                    el.ready(done)
+                else
+                    done()
 
     onclose: (el) ->
-        el._jquery ?= $(el.toString())
+        if el is el.builder
+            el._jquery ?= $()
+        else
+            el._jquery ?= $(el.toString())
 #         el._jquery.data('dt-jquery', el)
         release.call el
 
@@ -153,10 +171,8 @@ class JQueryAdapter
             delete el._jquery
 
     onend: () ->
-        @builder._jquery = $()
 #         @builder._jquery.data('dt-jquery', @template.xml)
-        release.call @builder
-        @template.jquery = @builder._jquery
+        @template.jquery = @template._jquery = @builder._jquery
 #         @template.jquery.data('dt-jquery', tpl)
 
 
