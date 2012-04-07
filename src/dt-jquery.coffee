@@ -22,7 +22,7 @@ delay = (job) ->
     return if removed this
     # only when tag is ready
     if @_jquery?
-        do job
+        job.call(this)
     else
         @_jquery_delay ?= []
         @_jquery_delay.push(job)
@@ -32,7 +32,7 @@ delay = (job) ->
 release = () ->
     if @_jquery_delay?
         for job in @_jquery_delay
-            do job
+            job.call(this)
         delete @_jquery_delay
 
 
@@ -51,6 +51,7 @@ class JQueryAdapter
 
     initialize: () ->
         do @listen
+        @builder._jquery_tracker = el:@builder
         # override query
         old_query = @builder.query
         @builder.query = (type, tag, key) ->
@@ -65,13 +66,15 @@ class JQueryAdapter
                     key
                 else
                     # assume this is allready a jquery object
-                    domel = key[0]
-                    attrs = {}
-                    for attr in domel.attributes
-                        attrs[attr.name] = attr.value
-                    new @builder.Tag domel.nodeName.toLowerCase(), attrs, ->
-                        @_jquery = key
-                        @end()
+                    if (domel = key[0])?
+                        attrs = {}
+                        for attr in domel.attributes
+                            attrs[attr.name] = attr.value
+                        new @builder.Tag domel.nodeName.toLowerCase(), attrs, ->
+                            @_jquery = key
+                            @end()
+                    else
+                        old_query.call(this, type, tag, key)
 #                     $(key).data('dt-jquery') or {_jquery:key}
         # register ready handler
         @template.register 'ready', (tag, next) ->
@@ -90,16 +93,24 @@ class JQueryAdapter
     # eventlisteners
 
     onadd: (parent, el) ->
+        el._jquery_tracker = {el}
         # insert into parent
-        delay.call parent, =>
-            if parent is parent.builder and parent._jquery.parent().length is 0
-                parent._jquery = parent._jquery.add(el._jquery)
+        that = this
+        delay.call parent, -> # !
+            el = el?._jquery_tracker?.el
+            return if not el or removed this
+            if this is @builder and @_jquery.parent().length is 0
+                @_jquery = @_jquery.add(el._jquery)
 #                 parent._jquery.data('dt-jquery', parent)
 #                 console.error "ready!", el.name, el._jquery_ready
                 el._jquery_ready?()
                 el._jquery_ready = yes
             else
-                done = => @animation.push ->
+                parent = @_jquery_tracker.el
+                done = -> that.animation.push ->
+                    parent = parent?._jquery_tracker?.el
+                    el = el?._jquery_tracker?.el
+                    return unless parent and el
                     if parent is parent.builder
                         parent._jquery.parent().append(el._jquery)
                     else
@@ -116,6 +127,8 @@ class JQueryAdapter
                     done()
 
     onclose: (el) ->
+        el._jquery_tracker ?= {el}
+#         return if removed el
         if el is el.builder
             el._jquery ?= $()
         else
@@ -131,44 +144,53 @@ class JQueryAdapter
 
     ontext: (el, text) ->
         delay.call el, ->
-            el._jquery.text(text)
+            @_jquery.text(text)
 
     onraw: (el, html) ->
-        delay.call el, =>
-            @animation.push ->
-                el._jquery?.html(html)
+        that = this
+        delay.call el, ->
+            that.animation.push =>
+                @_jquery?.html(html)
 
     onshow: (el) ->
         delay.call el, ->
-            el._jquery.show()
+            @_jquery.show()
 
     onhide: (el) ->
         delay.call el, ->
-            el._jquery.hide()
+            @_jquery.hide()
 
     onattr: (el, key, value) ->
         delay.call el, ->
             if value is undefined
-                el._jquery.removeAttr(key)
+                @_jquery.removeAttr(key)
             else
-                el._jquery.attr(key, value)
+                @_jquery.attr(key, value)
 
-    onreplace: (el, tag) ->
-        delay.call el, =>
-            @animation.push =>
-                return if removed el
-                _jquery = tag._jquery ? tag
-                return unless _jquery?.length > 0
-                el._jquery.replaceWith(_jquery)
-                # replaceWith isnt inplace
-                el._jquery = _jquery
-                if el is @builder
-                    el.jquery = _jquery
+    onreplace: (oldtag, newtag) ->
+        newtag._jquery_tracker ?= el:newtag
+        oldtag._jquery_tracker.el = newtag
+        that = this
+        delay.call oldtag, ->
+            newtag = newtag._jquery_tracker.el
+            delay.call newtag, ->
+                that.animation.push =>
+                    newtag = @_jquery_tracker.el
+                    return if removed(oldtag) or removed(newtag)
+                    _jquery = newtag._jquery ? newtag
+                    return unless _jquery?.length > 0
+                    oldtag._jquery.replaceWith(_jquery)
+                    # replaceWith isnt inplace
+                    for tag in [oldtag, newtag]
+                        tag._jquery = _jquery
+                        if tag is tag.builder
+                            tag.jquery = _jquery
 
     onremove: (el) ->
-        delay.call el.parent, ->
-            el._jquery?.remove()
+        if el._jquery?
+            el._jquery.remove()
             delete el._jquery
+        delete el._jquery_tracker
 
     onend: () ->
 #         @builder._jquery.data('dt-jquery', @template.xml)
