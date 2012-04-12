@@ -84,6 +84,40 @@ module.exports =
         , 100
 
 
+    'add to second level': (æ) ->
+        footer = null
+        api = new EventEmitter
+        tpl = jqueryify {@$}, new Template schema:5, ->
+            api.on('view', @$div(class:'content').add)
 
+
+        setTimeout ->
+            api.emit 'view', footer = new Template schema:5, ->
+                api.on('footer', @$footer().add)
+            æ.equal "8#{tpl is footer.xml?.parent?.builder?.template}", "8true"
+        , 8
+
+        setTimeout ->
+            api.emit 'footer', t = new Template schema:5, ->
+                @$p ->
+                    @text "foo"
+                    @span "lol"
+                @$p ->
+                    @text "bar"
+                    @span "rofl"
+            æ.equal "47#{footer is t.xml?.parent?.builder?.template}", "47true"
+        , 47
+
+        setTimeout =>
+            æ.equal @html(tpl.jquery), [
+                '<div class="content">'
+                "<footer>"
+                "<p>foo<span>lol</span></p>"
+                "<p>bar<span>rofl</span></p>"
+                "</footer>"
+                "</div>"
+            ].join("")
+            æ.done()
+        , 100
 
 
