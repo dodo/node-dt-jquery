@@ -96,14 +96,14 @@ class JQueryAdapter
                 if $par.parent().length > 0
                     if parent._jquery_wrapped is yes
                         parent._jquery_wrapped = no
-                        $par.first().replaceWith(el._jquery)
+                        $par.filter('spaceholder').replaceWith(el._jquery)
                     else
                         el._jquery.insertAfter($par[i])
             else
                 $par.append(el._jquery)
             if parent._jquery_wrapped is yes
                 parent._jquery_wrapped = no
-                $par.first().remove() # rm placeholder span
+                $par.filter('spaceholder').remove() # rm placeholder span
 
         replace: (oldtag, newtag) =>
             return if removed newag
