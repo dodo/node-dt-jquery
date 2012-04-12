@@ -79,17 +79,21 @@ class JQueryAdapter
 
     # jQuery commands
 
-    fn: =>
+    fn: ->
         add: (parent, el) =>
-            if parent is parent.builder and (parent._jquery?.parents().length ? 0) is 0
+            if parent is parent.builder
+                notindom = (parent._jquery?.parents().length ? 0) is 0
                 jq = parent._jquery
                 jq = jq.add(el._jquery)
                 parent.jquery = jq
                 parent._jquery = jq
                 parent.template.jquery = jq
                 parent.template._jquery = jq
-                if parent isnt @builder
-                    @fn.add(parent.parent, el)
+                if notindom
+                    if parent isnt @builder
+                        @fn.add(parent.parent, el) # FIXME
+                else
+                    parent._jquery?.append(el._jquery)
             else
                 parent._jquery?.append(el._jquery)
 
@@ -152,7 +156,7 @@ class JQueryAdapter
 
         el._jquery_parent_done ?= singlton_callback el, ->
             return if removed this
-            if @parent is @parent.builder
+            if @parent is that.builder
                 if @parent._jquery_insert is true
                     that.animation.push(@_jquery_insert)
                 else
@@ -178,7 +182,7 @@ class JQueryAdapter
         while (cb = newtag._jquery_manip.callbacks.shift())?
             @animation.push(cb)
 
-        if newtag._jquery_ready is true
+        if newtag._jquery_insert is true
             that = this
             newtag._jquery_replace ?= oldtag._jquery_replace
             noreplacerequest = newtag._jquery_replace?
