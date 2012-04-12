@@ -27,6 +27,7 @@ class JQueryAdapter
         opts.execution        ?= '4ms'
         opts.timeout          ?= '120ms'
         opts.toggle           ?= on
+        @$ ?= opts.jquery ? opts.$ ? window?.$
         # init requestAnimationFrame handler
         @animation = new Animation(opts)
         @animation.start()
@@ -35,7 +36,7 @@ class JQueryAdapter
     initialize: () ->
         do @listen
         # prefill builder with state
-        @builder._jquery = $([])
+        @builder._jquery = @$([])
         @builder._jquery_done = deferred_callbacks()
         do @builder._jquery_done.callback() # builder is allways done
         # override query
@@ -127,9 +128,9 @@ class JQueryAdapter
     onadd: (parent, el) ->
         return if removed el
         if el is el.builder
-            el._jquery ?= $([], el.parent?._jquery)
+            el._jquery ?= @$([], el.parent?._jquery)
         else
-            el._jquery ?= $(el.toString(), el.parent._jquery)
+            el._jquery ?= @$(el.toString(), el.parent._jquery)
 
         that = this
         el._jquery_manip    ?= cancelable_and_retrivable_callbacks()
