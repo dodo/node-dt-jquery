@@ -98,7 +98,7 @@ class JQueryAdapter
                         parent._jquery_wrapped = no
                         $par.first().replaceWith(el._jquery)
                     else
-                        el._jquery.after($par[i])
+                        el._jquery.insertAfter($par[i])
             else
                 $par.append(el._jquery)
             if parent._jquery_wrapped is yes
