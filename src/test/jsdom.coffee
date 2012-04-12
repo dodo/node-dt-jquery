@@ -59,4 +59,31 @@ module.exports =
             æ.done()
         , 100
 
+    'add after end': (æ) ->
+        api = new EventEmitter
+        tpl = jqueryify {@$}, new Template schema:5, ->
+            content = @$div class:'content'
+            api.on('view', content.add)
+            content.ready(next_step)
+
+        next_step = ->
+            setTimeout ->
+                api.emit 'view', t = new Template schema:5, ->
+                    @$span ->
+                        @$p "foo"
+                æ.equal "16#{tpl is t.xml?.parent?.builder?.template}", "16true"
+            , 16
+
+        setTimeout =>
+            æ.equal @html(tpl.jquery), [
+                '<div class="content">'
+                "<span><p>foo</p></span>"
+                "</div>"
+            ].join("")
+            æ.done()
+        , 100
+
+
+
+
 

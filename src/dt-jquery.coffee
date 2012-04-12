@@ -1,7 +1,7 @@
 { Animation } = require 'animation'
 { singlton_callback, deferred_callbacks,
   cancelable_and_retrivable_callbacks,
-  removed, $fyBuilder } = require './util'
+  defineJQueryAPI, removed, $fyBuilder } = require './util'
 
 EVENTS = [
     'add', 'end'
@@ -15,8 +15,6 @@ EVENTS = [
 
 # TODO listen for dom events to know when a dom manipulation is ready
 # TODO mit canvas tag kommt man direkt auf die browser render ticks.
-
-
 
 
 class JQueryAdapter
@@ -85,7 +83,10 @@ class JQueryAdapter
             if el._jquery.length is 0
                 el._jquery = @$('<spaceholder>', parent._jquery)
                 el._jquery_wrapped = yes
-                $fyBuilder el if el is el.builder
+                if el is el.builder
+                    $fyBuilder(el) # includes defineJQueryAPI
+                else
+                    defineJQueryAPI(el)
             $par = parent._jquery
             if parent is parent.builder
                 i = $par.length
@@ -142,6 +143,7 @@ class JQueryAdapter
             el._jquery ?= @$([], el.parent?._jquery)
         else
             el._jquery ?= @$(el.toString(), el.parent._jquery)
+        defineJQueryAPI(el)
 
         that = this
         el._jquery_manip    ?= cancelable_and_retrivable_callbacks()
