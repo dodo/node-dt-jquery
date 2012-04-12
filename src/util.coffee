@@ -43,8 +43,16 @@ cancelable_and_retrivable_callbacks = () ->
     return res
 
 
+$fyBuilder = (builder) ->
+    $builder = builder._jquery
+    builder.jquery = $builder
+    builder.template.jquery = $builder
+    builder.template._jquery = $builder
+
+
 removed = (el) ->
     el.closed is "removed"
+
 
 # exports
 
@@ -52,5 +60,6 @@ module.exports = {
     singlton_callback,
     deferred_callbacks,
     cancelable_and_retrivable_callbacks,
+    $fyBuilder,
     removed,
 }

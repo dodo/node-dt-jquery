@@ -1,6 +1,7 @@
 { Animation } = require 'animation'
 { singlton_callback, deferred_callbacks,
-  cancelable_and_retrivable_callbacks, removed } = require './util'
+  cancelable_and_retrivable_callbacks,
+  removed, $fyBuilder } = require './util'
 
 EVENTS = [
     'add', 'end'
@@ -81,21 +82,27 @@ class JQueryAdapter
 
     fn: ->
         add: (parent, el) =>
+            if el._jquery.length is 0
+                el._jquery = @$('<spaceholder>', parent._jquery)
+                el._jquery_wrapped = yes
+                $fyBuilder el if el is el.builder
+            $par = parent._jquery
             if parent is parent.builder
-                notindom = (parent._jquery?.parents().length ? 0) is 0
-                jq = parent._jquery
-                jq = jq.add(el._jquery)
-                parent.jquery = jq
-                parent._jquery = jq
-                parent.template.jquery = jq
-                parent.template._jquery = jq
-                if notindom
-                    if parent isnt @builder
-                        @fn.add(parent.parent, el) # FIXME
-                else
-                    parent._jquery?.append(el._jquery)
+                i = $par.length
+                $par = $par.add(el._jquery)
+                parent._jquery = $par
+                $fyBuilder parent
+                if $par.parent().length > 0
+                    if parent._jquery_wrapped is yes
+                        parent._jquery_wrapped = no
+                        $par.first().replaceWith(el._jquery)
+                    else
+                        el._jquery.after($par[i])
             else
-                parent._jquery?.append(el._jquery)
+                $par.append(el._jquery)
+            if parent._jquery_wrapped is yes
+                parent._jquery_wrapped = no
+                $par.first().remove() # rm placeholder span
 
         replace: (oldtag, newtag) =>
             return if removed newag
