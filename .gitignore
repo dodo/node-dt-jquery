@@ -1,6 +1,7 @@
 *~
 *swp
 lib/*
+test/*
 *.browser.*
 .lock-wscript
 node_modules/
