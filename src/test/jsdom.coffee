@@ -16,7 +16,7 @@ module.exports =
         callback()
 
 
-    simple: (æ) ->
+    normal: (æ) ->
         tpl = jqueryify {@$}, new Template schema:5, ->
             @$div class:'content', ->
                 @$p("bla").ready(done)
@@ -69,7 +69,7 @@ module.exports =
 
         'after end': (æ) ->
             @æ = æ ; { $, api } = this
-            tpl = @tpl = jqueryify {@$}, new Template schema:5, ->
+            tpl = @tpl = jqueryify {$}, new Template schema:5, ->
                 content = @$div class:'content'
                 api.on('view', content.add)
                 content.ready(next_step)
@@ -92,7 +92,7 @@ module.exports =
         'to second level': (æ) ->
             @æ = æ ; { $, api } = this
             footer = null
-            tpl = @tpl = jqueryify {@$}, new Template schema:5, ->
+            tpl = @tpl = jqueryify {$}, new Template schema:5, ->
                 api.on('view', @$div(class:'content').add)
 
 
