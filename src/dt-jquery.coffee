@@ -223,11 +223,13 @@ class JQueryAdapter
     onend: () ->
 #         @builder._jquery.data('dt-jquery', @template.xml)
         @template.jquery = @template._jquery = @builder._jquery
+        defineJQueryAPI(@template)
 #         @template.jquery.data('dt-jquery', tpl)
 
 
 
-jqueryify = (tpl, opts) ->
+jqueryify = (opts, tpl) ->
+    [tpl, opts] = [opts, null] unless tpl?
     new JQueryAdapter(tpl, opts)
     return tpl
 
