@@ -89,21 +89,21 @@ class JQueryAdapter
                     defineJQueryAPI(el)
             $par = parent._jquery
             if parent is parent.builder
-                i = $par.length
+                i = $par.length - 1
                 $par = $par.add(el._jquery)
-                parent._jquery = $par
-                $fyBuilder parent
                 if $par.parent().length > 0
-                    if parent._jquery_wrapped is yes
+                    if parent._jquery_wrapped
                         parent._jquery_wrapped = no
                         $par.filter('spaceholder').replaceWith(el._jquery)
                     else
                         el._jquery.insertAfter($par[i])
             else
                 $par.append(el._jquery)
-            if parent._jquery_wrapped is yes
+            if parent._jquery_wrapped
                 parent._jquery_wrapped = no
-                $par.filter('spaceholder').remove() # rm placeholder span
+                $par = $par.not('spaceholder') # rm placeholder span
+            parent._jquery = $par
+            $fyBuilder(parent) if parent is parent.builder
 
         replace: (oldtag, newtag) =>
             return if removed newag
