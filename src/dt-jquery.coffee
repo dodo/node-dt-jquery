@@ -135,7 +135,7 @@ class JQueryAdapter
         remove: (el) =>
             el._jquery.remove()
 
-    # eventlisteners
+    # flow control : eventlisteners
 
     onadd: (parent, el) ->
         return if removed el

@@ -107,19 +107,15 @@ module.exports =
 
             setTimeout ->
                 adds.should++
-                t = new Template schema:5, ->
-                    p = @$p ->
+                api.emit 'footer', t = new Template schema:5, ->
+                    @$p ->
                         @text "foo"
                         @$span "lol"
                         adds.should += 2
-                    p._debug = on
-                    p = @$p ->
+                    @$p ->
                         @text "bar"
                         @$span "rofl"
                         adds.should += 2
-                    p._debug = on
-                t._debug = on
-                api.emit 'footer', t
                 æ.equal "13#{footer is t.xml?.parent?.builder?.template}", "13true"
             , 13
 
