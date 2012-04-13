@@ -133,3 +133,36 @@ module.exports =
             ].join("")
 
 
+
+
+    replace:
+        setUp: (callback) ->
+            @api = new EventEmitter
+            @results = "no results"
+            setTimeout =>
+                @æ.equal @html(@tpl.jquery), @results
+                @æ.done()
+            , 100
+            callback()
+
+
+        instand: (æ) ->
+            @æ = æ ; { $, api } = this
+            tpl = @tpl = jqueryify {$}, new Template schema:5, ->
+                @$div class:'content', ->
+                    api.on('view', @$p("bla").replace)
+
+            setTimeout ->
+                api.emit 'view', t = new Template schema:5, ->
+                    @$p ->
+                        @text "foo"
+                        @$b "bar"
+                æ.equal "3#{tpl is t.xml?.parent?.builder?.template}", "3true"
+            , 3
+
+            @results = [
+                '<div class="content">'
+                "<p>foo<b>bar</b></p>"
+                "</div>"
+            ].join("")
+
