@@ -91,27 +91,41 @@ module.exports =
 
         'to second level': (æ) ->
             @æ = æ ; { $, api } = this
-            footer = null
+            [footer, adds] = [null, {should:0, real:0}]
             tpl = @tpl = jqueryify {$}, new Template schema:5, ->
                 api.on('view', @$div(class:'content').add)
-
+                adds.should++
+            tpl.on 'add', -> adds.real++
 
             setTimeout ->
+                adds.should++
                 api.emit 'view', footer = new Template schema:5, ->
                     api.on('footer', @$footer().add)
+                    adds.should++
                 æ.equal "8#{tpl is footer.xml?.parent?.builder?.template}", "8true"
             , 8
 
             setTimeout ->
-                api.emit 'footer', t = new Template schema:5, ->
-                    @$p ->
+                adds.should++
+                t = new Template schema:5, ->
+                    p = @$p ->
                         @text "foo"
-                        @span "lol"
-                    @$p ->
+                        @$span "lol"
+                        adds.should += 2
+                    p._debug = on
+                    p = @$p ->
                         @text "bar"
-                        @span "rofl"
-                æ.equal "47#{footer is t.xml?.parent?.builder?.template}", "47true"
-            , 47
+                        @$span "rofl"
+                        adds.should += 2
+                    p._debug = on
+                t._debug = on
+                api.emit 'footer', t
+                æ.equal "13#{footer is t.xml?.parent?.builder?.template}", "13true"
+            , 13
+
+            setTimeout ->
+                æ.equal adds.should, adds.real
+            , 52
 
             @results = [
                 '<div class="content">'
