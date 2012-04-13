@@ -166,3 +166,31 @@ module.exports =
                 "</div>"
             ].join("")
 
+        'after end': (æ) ->
+            @æ = æ ; { $, api } = this
+            tpl = @tpl = jqueryify {$}, new Template schema:5, ->
+                @$div class:'content', ->
+                    p = @$p("bla")
+                    api.on('view', p.replace)
+                    p.ready(next_step)
+
+            next_step = ->
+                next_step.called = yes
+                setTimeout ->
+                    api.emit 'view', t = new Template schema:5, ->
+                        @$p ->
+                            @text "foo"
+                            @$b "bar"
+                    æ.equal "7#{tpl is t.xml?.parent?.builder?.template}", "7true"
+                , 7
+
+            setTimeout ->
+                æ.equal "called:#{next_step.called and 'yes' or 'no'}", "called:yes"
+            , 52
+
+            @results = [
+                '<div class="content">'
+                "<p>foo<b>bar</b></p>"
+                "</div>"
+            ].join("")
+
