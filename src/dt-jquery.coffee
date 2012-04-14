@@ -106,13 +106,27 @@ class JQueryAdapter
             $fyBuilder(parent) if parent is parent.builder
 
         replace: (oldtag, newtag) =>
-            return if removed newag
-            _jquery = newtag._jquery ? newtag
-            oldtag._jquery.replaceWith(_jquery)
+            return if removed newtag
+            parent = newtag.parent
+            $new = newtag._jquery ? newtag
+            $old = oldtag._jquery ? oldtag
+
+            if $new.length is 0
+                newtag._jquery = $new = @$('<spaceholder>', parent._jquery)
+                newtag._jquery_wrapped = yes
+                if newtag is newtag.builder
+                    $fyBuilder(newtag) # includes defineJQueryAPI
+                else
+                    defineJQueryAPI(newtag)
+
+            if parent is parent.builder
+                $par.splice($par.index($old), $old.length, $new...)
+                $fyBuilder(parent)
+            if $old.parent().length > 0
+                $old.replaceWith($new)
             # replaceWith isnt inplace
-            newtag._jquery = _jquery
-            if newtag is newtag.builder
-                newtag.jquery = _jquery
+            newtag._jquery = $new
+            $fyBuilder(newtag) if newtag is newtag.builder
 
         text: (el, text) =>
             el._jquery.text(text)
