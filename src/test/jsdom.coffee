@@ -168,6 +168,7 @@ module.exports =
 
         'after end': (æ) ->
             @æ = æ ; { $, api } = this
+            p = null
             tpl = @tpl = jqueryify {$}, new Template schema:5, ->
                 @$div class:'content', ->
                     p = @$p("bla")
@@ -175,12 +176,13 @@ module.exports =
                     p.ready(next_step)
 
             next_step = ->
+                æ.equal "closed:#{p.closed and 'yes' or 'no'}", "closed:yes"
                 next_step.called = yes
                 setTimeout ->
                     api.emit 'view', t = new Template schema:5, ->
                         @$p ->
-                            @text "foo"
-                            @$b "bar"
+                            @text "hack"
+                            @$b "hack"
                     æ.equal "7#{tpl is t.xml?.parent?.builder?.template}", "7true"
                 , 7
 
@@ -190,7 +192,7 @@ module.exports =
 
             @results = [
                 '<div class="content">'
-                "<p>foo<b>bar</b></p>"
+                "<p>hack<b>hack</b></p>"
                 "</div>"
             ].join("")
 
