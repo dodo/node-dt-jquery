@@ -194,12 +194,12 @@ class JQueryAdapter
         if newtag._jquery_insert is true
             that = this
             newtag._jquery_replace ?= oldtag._jquery_replace
-            noreplacerequest = newtag._jquery_replace?
+            oldreplacerequest = newtag._jquery_replace?
             newtag._jquery_replace ?= singlton_callback newtag, ->
                 that.fn.replace(oldtag, this)
             newtag._jquery_replace.replace?(newtag)
             oldtag._jquery_replace = null
-            if noreplacerequest
+            unless oldreplacerequest
                 @animation.push(newtag._jquery_replace)
 
     ontext: (el, text) ->
