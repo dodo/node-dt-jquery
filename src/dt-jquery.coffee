@@ -110,18 +110,17 @@ class JQueryAdapter
             parent = newtag.parent
             $new = newtag._jquery ? newtag
             $old = oldtag._jquery ? oldtag
+            $par = parent._jquery ? parent
 
             if $new.length is 0
-                newtag._jquery = $new = @$('<spaceholder>', parent._jquery)
+                newtag._jquery = $new = @$('<spaceholder>', $par)
                 newtag._jquery_wrapped = yes
-                if newtag is newtag.builder
-                    $fyBuilder(newtag) # includes defineJQueryAPI
-                else
-                    defineJQueryAPI(newtag)
+                defineJQueryAPI(newtag) unless newtag is newtag.builder
 
             if parent is parent.builder
                 $par.splice($par.index($old), $old.length, $new...)
                 $fyBuilder(parent)
+
             if $old.parent().length > 0
                 $old.replaceWith($new)
             # replaceWith isnt inplace
