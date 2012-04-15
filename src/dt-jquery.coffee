@@ -80,28 +80,32 @@ class JQueryAdapter
 
     fn: ->
         add: (parent, el) =>
-            if el._jquery.length is 0
-                el._jquery = @$('<spaceholder>', parent._jquery)
+            $el = el._jquery ? el
+            $par = parent._jquery ? parent
+            if $el.length is 0
+                el._jquery = $el = @$('<spaceholder>', $par)
                 el._jquery_wrapped = yes
                 if el is el.builder
                     $fyBuilder(el) # includes defineJQueryAPI
                 else
                     defineJQueryAPI(el)
-            $par = parent._jquery
             if parent is parent.builder
                 i = $par.length - 1
-                $par = $par.add(el._jquery)
-                if $par.parent().length > 0
-                    if parent._jquery_wrapped
+                $par = $par.add($el)
+                if parent._jquery_wrapped
+                    $par.first().replaceWith($el)
+                    if parent.parent is parent.parent?.builder # FIXME recursive?
+                        $parpar = parent.parent?._jquery ? parent.parent
                         parent._jquery_wrapped = no
-                        $par.filter('spaceholder').replaceWith(el._jquery)
-                    else
-                        el._jquery.insertAfter($par[i])
+                        $par = $par.not(':first') # rm placeholder span
+                        $parpar.splice($parpar.index($par), i+1, $par...)
+                else if $par.parent().length > 0
+                    $el.insertAfter($par[i])
             else
-                $par.append(el._jquery)
+                $par.append($el)
             if parent._jquery_wrapped
                 parent._jquery_wrapped = no
-                $par = $par.not('spaceholder') # rm placeholder span
+                $par = $par.not(':first') # rm placeholder span
             parent._jquery = $par
             $fyBuilder(parent) if parent is parent.builder
 
