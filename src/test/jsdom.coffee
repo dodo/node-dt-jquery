@@ -92,6 +92,24 @@ module.exports =
             ].join("")
 
 
+        'template into template': (æ) ->
+            @æ = æ ; { $, api } = this
+            tpl = @tpl = jqueryify {$}, new Template schema:5, ->
+                api.on('view', @add)
+
+            setTimeout ->
+                api.emit 'view', t = new Template schema:5, ->
+                    @$span ->
+                        @$p "foo"
+                æ.equal "9#{tpl is t.xml?.parent?.builder?.template}",
+                        "9true"
+            , 9
+
+            @results = [
+                "<span><p>foo</p></span>"
+            ].join("")
+
+
         'to second level': (æ) ->
             @æ = æ ; { $, api } = this
             [footer, adds] = [null, {should:0, real:0}]
