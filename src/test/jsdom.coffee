@@ -49,14 +49,16 @@ module.exports =
                 api.emit 'view', t = new Template schema:5, ->
                     @$footer ->
                         @$p "bar"
-                æ.equal "42#{tpl is t.xml?.parent?.builder?.template}", "42true"
+                æ.equal "42#{tpl is t.xml?.parent?.builder?.template}",
+                        "42true"
             , 42
 
             setTimeout ->
                 api.emit 'view', t = new Template schema:5, ->
                     @$span ->
                         @$p "foo"
-                æ.equal "23#{tpl is t.xml?.parent?.builder?.template}", "23true"
+                æ.equal "23#{tpl is t.xml?.parent?.builder?.template}",
+                        "23true"
             , 23
 
             @results = [
@@ -79,7 +81,8 @@ module.exports =
                     api.emit 'view', t = new Template schema:5, ->
                         @$span ->
                             @$p "foo"
-                    æ.equal "16#{tpl is t.xml?.parent?.builder?.template}", "16true"
+                    æ.equal "16#{tpl is t.xml?.parent?.builder?.template}",
+                            "16true"
                 , 16
 
             @results = [
@@ -102,7 +105,8 @@ module.exports =
                 api.emit 'view', footer = new Template schema:5, ->
                     api.on('footer', @$footer().add)
                     adds.should++
-                æ.equal "8#{tpl is footer.xml?.parent?.builder?.template}", "8true"
+                æ.equal "8#{tpl is footer.xml?.parent?.builder?.template}",
+                        "8true"
             , 8
 
             setTimeout ->
@@ -116,7 +120,8 @@ module.exports =
                         @text "bar"
                         @$span "rofl"
                         adds.should += 2
-                æ.equal "13#{footer is t.xml?.parent?.builder?.template}", "13true"
+                æ.equal "13#{footer is t.xml?.parent?.builder?.template}",
+                        "13true"
             , 13
 
             setTimeout ->
@@ -157,7 +162,8 @@ module.exports =
                     @$p ->
                         @text "foo"
                         @$b "bar"
-                æ.equal "3#{tpl is t.xml?.parent?.builder?.template}", "3true"
+                æ.equal "3#{tpl is t.xml?.parent?.builder?.template}",
+                        "3true"
             , 3
 
             @results = [
@@ -176,18 +182,21 @@ module.exports =
                     p.ready(next_step)
 
             next_step = ->
-                æ.equal "closed:#{p.closed and 'yes' or 'no'}", "closed:yes"
+                æ.equal "closed:#{p.closed and 'yes' or 'no'}",
+                        "closed:yes"
                 next_step.called = yes
                 setTimeout ->
                     api.emit 'view', t = new Template schema:5, ->
                         @$p ->
                             @text "hack"
                             @$b "hack"
-                    æ.equal "7#{tpl is t.xml?.parent?.builder?.template}", "7true"
+                    æ.equal "7#{tpl is t.xml?.parent?.builder?.template}",
+                            "7true"
                 , 7
 
             setTimeout ->
-                æ.equal "called:#{next_step.called and 'yes' or 'no'}", "called:yes"
+                æ.equal "called:#{next_step.called and 'yes' or 'no'}",
+                        "called:yes"
             , 52
 
             @results = [
