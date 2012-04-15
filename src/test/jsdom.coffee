@@ -164,6 +164,9 @@ module.exports =
                         @$b "bar"
                 æ.equal "3#{tpl is t.xml?.parent?.builder?.template}",
                         "3true"
+                t.ready ->
+                    æ.equal "jqueryified:#{t.jquery? and 'yes' or 'no'}",
+                            "jqueryified:yes"
             , 3
 
             @results = [
@@ -192,6 +195,9 @@ module.exports =
                             @$b "hack"
                     æ.equal "7#{tpl is t.xml?.parent?.builder?.template}",
                             "7true"
+                    t.ready ->
+                        æ.equal "jqueryified:#{t.jquery? and 'yes' or 'no'}",
+                                "jqueryified:yes"
                 , 7
 
             setTimeout ->

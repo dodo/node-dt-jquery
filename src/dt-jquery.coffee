@@ -154,9 +154,10 @@ class JQueryAdapter
         return if removed el
         if el is el.builder
             el._jquery ?= @$([], el.parent?._jquery)
+            $fyBuilder(el)
         else
             el._jquery ?= @$(el.toString(), el.parent._jquery)
-        defineJQueryAPI(el)
+            defineJQueryAPI(el)
 
         that = this
         el._jquery_manip    ?= cancelable_and_retrivable_callbacks()
