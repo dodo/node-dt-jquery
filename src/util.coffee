@@ -58,6 +58,15 @@ $fyBuilder = (builder) ->
     defineJQueryAPI(builder)
 
 
+createSpaceholder = (el, $par) ->
+    el._jquery = @$('<spaceholder>', $par)
+    el._jquery_wrapped = yes
+    if el is el.builder
+        $fyBuilder(el) # includes defineJQueryAPI
+    else
+        defineJQueryAPI(el)
+
+
 removed = (el) ->
     el.closed is "removed"
 
@@ -68,6 +77,7 @@ module.exports = {
     singlton_callback,
     deferred_callbacks,
     cancelable_and_retrivable_callbacks,
+    createSpaceholder,
     defineJQueryAPI,
     $fyBuilder,
     removed,

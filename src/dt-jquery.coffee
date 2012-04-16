@@ -1,7 +1,8 @@
 { Animation } = require 'animation'
 { singlton_callback, deferred_callbacks,
   cancelable_and_retrivable_callbacks,
-  defineJQueryAPI, removed, $fyBuilder } = require './util'
+  defineJQueryAPI, $fyBuilder,
+  createSpaceholder, removed } = require './util'
 defaultfn = require './fn'
 { isArray } = Array
 
@@ -108,7 +109,13 @@ class JQueryAdapter
         if parent is parent.builder then pcb() else parent.ready(pcb)
 
         el._jquery_insert ?= singlton_callback el, ->
+            if @_jquery.length is 0
+                createSpaceholder.call(that, this, @parent._jquery)
             that.fn.add(@parent, this)
+            if @parent._jquery_wrapped
+                @parent._jquery_wrapped = no
+                @parent._jquery = @parent._jquery.not(':first') # rm placeholder span
+            $fyBuilder(@parent) if @parent is @parent.builder
             @_jquery_ready?()
             @_jquery_ready = yes
             @_jquery_insert = yes
@@ -151,7 +158,10 @@ class JQueryAdapter
             newtag._jquery_replace ?= oldtag._jquery_replace
             oldreplacerequest = newtag._jquery_replace?
             newtag._jquery_replace ?= singlton_callback newtag, ->
+                if @_jquery.length is 0
+                    createSpaceholder.call(that, this, @parent._jquery)
                 that.fn.replace(oldtag, this)
+                $fyBuilder(this) if this is @builder
             newtag._jquery_replace.replace?(newtag)
             oldtag._jquery_replace = null
             unless oldreplacerequest
