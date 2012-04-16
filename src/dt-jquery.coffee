@@ -22,8 +22,8 @@ class JQueryAdapter
         @fn = @fn()
         @builder = @template.xml ? @template
         # defaults
-        opts.timeoutexecution ?= '20ms'
-        opts.execution        ?= '4ms'
+        opts.timeoutexecution ?= '32ms'
+        opts.execution        ?= '8ms' # half of 16ms (60 FPS), the other half is for the browser
         opts.timeout          ?= '120ms'
         opts.toggle           ?= on
         @$ ?= opts.jquery ? opts.$ ? window?.$
