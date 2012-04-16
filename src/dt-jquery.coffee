@@ -167,12 +167,11 @@ class JQueryAdapter
         el._jquery_manip    ?= cancelable_and_retrivable_callbacks()
         el._jquery_done     ?= deferred_callbacks()
         parent._jquery_done ?= deferred_callbacks()
-        for tag in [parent, el]
-            cb = tag._jquery_done.callback()
-            if tag is that.builder
-                cb()
-            else
-                tag.ready(cb)
+
+        ecb = el._jquery_done.callback()
+        pcb = parent._jquery_done.callback()
+        if el is el.builder then ecb() else el.ready(ecb)
+        if parent is parent.builder then pcb() else parent.ready(pcb)
 
         el._jquery_insert ?= singlton_callback el, ->
             that.fn.add(@parent, this)
@@ -183,8 +182,11 @@ class JQueryAdapter
 
         el._jquery_parent_done ?= singlton_callback el, ->
             return if removed this
-            if @parent is that.builder
-                if @parent._jquery_insert is true
+            if @parent is @parent.builder
+                bool = (not @parent.parent? or
+                           (@parent.parent is @parent.parent?.builder and # FIXME recursive?
+                            @parent.parent?._jquery_done is true))
+                if bool and @parent._jquery_insert is true
                     that.animation.push(@_jquery_insert)
                 else
                     @_jquery_insert?()
@@ -194,6 +196,7 @@ class JQueryAdapter
         parent._jquery_done(el._jquery_parent_done)
 
     onreplace: (oldtag, newtag) ->
+        return if removed(oldtag) or removed(newtag)
         newtag._jquery_parent_done ?= oldtag._jquery_parent_done
         newtag._jquery_insert      ?= oldtag._jquery_insert
         newtag._jquery_done        ?= oldtag._jquery_done
