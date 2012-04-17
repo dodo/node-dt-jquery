@@ -33,15 +33,14 @@ class JQueryAdapter
         @animation = new Animation(opts)
         @animation.start()
         # init jquery functions
-        [@fn, fns] = [{}, []]
-        if isArray opts.fn
-            fns = fns.concat(opts.fn)
-        else fns.push(opts.fn ? {})
-        fns.push(defaultfn)
-        for fn in fns
-            for n,f of fn
-                @fn[n] ?= f.bind(this) if typeof f is 'function'
+        @fn = {}
+        for n,f of defaultfn
+            @fn[n] ?= f.bind(this)
         @initialize()
+        # allow plugins as options
+        opts.use ?= []
+        opts.use = [opts.use] unless isArray opts.use
+        @use(plugin) for plugin in opts.use
 
     initialize: () ->
         do @listen
@@ -82,6 +81,10 @@ class JQueryAdapter
             else
                 tag._jquery_ready = ->
                     next(tag)
+
+    use: (plugin) ->
+        plugin?.call(this, this)
+        return this
 
     listen: () ->
         EVENTS.forEach (event) =>
