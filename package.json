@@ -8,12 +8,14 @@
 , "engines": {"node": ">= 0.4.x"}
 , "keywords": ["dt", "async", "dynamic", "event", "template", "generation", "stream", "browser", "jquery"]
 , "scripts": {
+    "test": "cake build && nodeunit test",
     "prepublish": "cake build"}
 , "dependencies": {
     "animation": ">= 0.0.2"}
 , "devDependencies": {
-    "dynamictemplate": "*",
+    "dynamictemplate": "0.5.1",
     "jquery": "1.6.3",
+    "nodeunit": ">= 0.7.4",
     "browserify": "1.6.1",
     "scopify": ">= 0.2.1",
     "muffin": ">= 0.2.6",
