@@ -52,3 +52,5 @@ For query type `text` it returns the result of [jQuery.text](http://api.jquery.c
 For query type `attr` it returns the result of [jQuery.attr](http://api.jquery.com/attr/).
 
 For query type `tag` it returns a dummy object that it will receive again on an `add` event.
+
+[![Build Status](https://secure.travis-ci.org/dodo/node-dt-jquery.png)](http://travis-ci.org/dodo/node-dt-jquery)
