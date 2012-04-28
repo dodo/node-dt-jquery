@@ -5,7 +5,7 @@ jqueryify = require '../dt-jquery'
 
 HTML = ($,el) ->
     $div = $('<div>')
-    $div.append(el)
+    $div.append(el.clone())
     $div.html() or "<empty/>" # m(
 
 module.exports =
@@ -211,7 +211,7 @@ module.exports =
             callback()
 
 
-        instand: (æ) ->
+        instant: (æ) ->
             @æ = æ ; { $, api } = this
             tpl = @tpl = jqueryify {$}, new Template schema:5, ->
                 @$div class:'content', ->
