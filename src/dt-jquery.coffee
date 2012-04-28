@@ -190,10 +190,10 @@ class JQueryAdapter
             @fn.attr(el, key, value)
 
     onshow: (el) ->
-        @fn.show(el)
+        @fn.show(el) if el._jquery?
 
     onhide: (el) ->
-        @fn.hide(el)
+        @fn.hide(el) if el._jquery?
 
     onremove: (el, opts) ->
         return unless el._jquery?
