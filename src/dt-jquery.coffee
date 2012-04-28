@@ -105,6 +105,9 @@ class JQueryAdapter
         el._jquery_manip    ?= cancelable_and_retrivable_callbacks()
         el._jquery_done     ?= deferred_callbacks()
         parent._jquery_done ?= deferred_callbacks()
+        el._jquery_manip.reset()
+        while (cb = el._jquery_manip.callbacks.shift())?
+            @animation.push(cb)
 
         ecb = el._jquery_done.callback()
         pcb = parent._jquery_done.callback()
@@ -171,14 +174,18 @@ class JQueryAdapter
                 @animation.push(newtag._jquery_replace)
 
     ontext: (el, text) ->
+        el._jquery_manip ?= cancelable_and_retrivable_callbacks(yes)
         @animation.push el._jquery_manip =>
             @fn.text(el, text)
 
     onraw: (el, html) ->
+#         if el_jquer
+        el._jquery_manip ?= cancelable_and_retrivable_callbacks(yes)
         @animation.push el._jquery_manip =>
             @fn.raw(el, html)
 
     onattr: (el, key, value) ->
+        el._jquery_manip ?= cancelable_and_retrivable_callbacks(yes)
         @animation.push el._jquery_manip =>
             @fn.attr(el, key, value)
 
