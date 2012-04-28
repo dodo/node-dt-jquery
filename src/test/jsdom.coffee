@@ -113,6 +113,38 @@ module.exports =
             ]
 
 
+        'after remove': (æ) ->
+            @æ = æ ; { $, api } = this
+            foo = null
+            tpl = @tpl = jqueryify {$}, new Template schema:5, ->
+                @$div class:'content', ->
+                    api.on('view', @add)
+                    foo = @$p "foo"
+                    bar = @$p "bar"
+
+            setTimeout =>
+                foo.remove(soft:yes)
+                api.emit 'view', foo
+
+                process.nextTick ->
+                    æ.equal 1, foo._jquery.length
+                    æ.equal 0, foo._jquery.filter('spaceholder').length
+                æ.equal "37#{tpl is foo.builder?.template}",
+                        "37true"
+                foo.ready =>
+                    æ.equal @html(foo._jquery), [
+                        "<p>foo</p>"
+                    ].join("")
+            , 37
+
+            @results = [
+                '<div class="content">'
+                "<p>bar</p>"
+                "<p>foo</p>"
+                "</div>"
+            ]
+
+
         'template into template': (æ) ->
             @æ = æ ; { $, api } = this
             tpl = @tpl = jqueryify {$}, new Template schema:5, ->
