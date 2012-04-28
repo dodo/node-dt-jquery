@@ -29,8 +29,7 @@ deferred_callbacks = () ->
         done = no
     return res
 
-cancelable_and_retrivable_callbacks = () ->
-    canceled = no
+cancelable_and_retrivable_callbacks = (canceled = no) ->
     res = (cb) ->
         return ->
             if canceled
