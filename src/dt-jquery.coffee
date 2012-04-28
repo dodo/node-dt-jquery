@@ -188,14 +188,19 @@ class JQueryAdapter
     onhide: (el) ->
         @fn.hide(el)
 
-    onremove: (el) ->
+    onremove: (el, opts) ->
         return unless el._jquery?
-        @fn.remove(el)
-        el._jquery_done.reset()
+        @fn.remove(el, opts)
+        el._jquery_parent_done_done?.reset()
+        el._jquery_done?.reset()
         el._jquery_manip?.cancel()
-        delete el._jquery_manip
-        delete el._jquery_done
-        delete el._jquery
+        delete el._jquery_parent_done
+        delete el._jquery_replace
+        delete el._jquery_insert
+        unless opts.soft
+            delete el._jquery_manip
+            delete el._jquery_done
+            delete el._jquery
 
     onend: () ->
 #         @builder._jquery.data('dt-jquery', @template.xml)

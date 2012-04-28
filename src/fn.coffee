@@ -53,5 +53,8 @@ module.exports =
     hide: (el) ->
         el._jquery.hide()
 
-    remove: (el) ->
-        el._jquery.remove()
+    remove: (el, opts) ->
+        if opts.soft
+            el._jquery.detach()
+        else
+            el._jquery.remove()
