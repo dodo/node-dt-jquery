@@ -13,7 +13,7 @@
 , "dependencies": {
     "animation": ">= 0.0.2"}
 , "devDependencies": {
-    "dynamictemplate": "0.5.1",
+    "dynamictemplate": "0.5.2",
     "jquery": "1.6.3",
     "nodeunit": ">= 0.7.4",
     "browserify": "1.6.1",
