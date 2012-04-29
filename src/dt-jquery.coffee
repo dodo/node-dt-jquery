@@ -132,7 +132,7 @@ class JQueryAdapter
             if @parent is @parent.builder
                 bool = (not @parent.parent? or
                            (@parent.parent is @parent.parent?.builder and # FIXME recursive?
-                            @parent.parent?._jquery_done is true))
+                            @parent.parent?._jquery_insert is true))
                 if bool and @parent._jquery_insert is true
                     that.animation.push(@_jquery_insert)
                 else
