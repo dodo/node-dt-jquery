@@ -87,7 +87,7 @@ class JQueryAdapter extends BrowserAdapter
 
     replace_callback: (oldtag, newtag) ->
         if newtag._jquery.length is 0
-            createSpaceholder.call(that, newtag, newtag.parent._jquery)
+            createSpaceholder.call(this, newtag, newtag.parent._jquery)
         super
         $fyBuilder(newtag) if newtag is newtag.builder
 
