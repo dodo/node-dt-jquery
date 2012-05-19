@@ -35,7 +35,7 @@ class JQueryAdapter extends BrowserAdapter
                 if key._jquery?
                     key
                 else
-                    # assume this is allready a jquery object
+                    # assume this is already a jquery object
                     if (domel = key[0])?
                         attrs = {}
                         for attr in domel.attributes
