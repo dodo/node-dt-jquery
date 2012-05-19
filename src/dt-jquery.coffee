@@ -1,8 +1,7 @@
-{ Adapter:BrowserAdapter } = require 'dt-browser-shared'
+{ Adapter:BrowserAdapter } = require 'dt-browser'
 { defineJQueryAPI, $fyBuilder,
   createSpaceholder } = require './util'
 defaultfn = require './fn'
-{ isArray } = Array
 
 # TODO listen on data and use innerHTML to create all dom elems at once
 #       http://blog.stevenlevithan.com/archives/faster-than-innerhtml
@@ -76,14 +75,14 @@ class JQueryAdapter extends BrowserAdapter
     insert_callback: (el) -> # the best i could do :(
         if el._jquery.length is 0
             createSpaceholder.call(this, el, el.parent._jquery)
-        @fn.add(el.parent, el) # part of dt-browser-shared
+        @fn.add(el.parent, el) # part of dt-browser
         if el.parent._jquery_wrapped
             el.parent._jquery_wrapped = no
             el.parent._jquery = el.parent._jquery.not(':first') # rm placeholder span
         $fyBuilder(el.parent) if el.parent is el.parent.builder
-        el._browser_ready?()
-        el._browser_ready  = yes # part of dt-browser-shared
-        el._browser_insert = yes # part of dt-browser-shared
+        el._browser.ready?(el)   # part of dt-browser
+        el._browser.ready  = yes # part of dt-browser
+        el._browser.insert = yes # part of dt-browser
 
     replace_callback: (oldtag, newtag) ->
         if newtag._jquery.length is 0
