@@ -16,7 +16,7 @@ module.exports =
                     $par = $par.not(':first') # rm placeholder span
                     $parpar?.splice($parpar.index($par), i+1, $par...)
                     $fyBuilder(parent.parent) if parent.parent?
-            else if $par.parent().length > 0
+            else if parent._browser.insert is true
                 $el.insertAfter($par[i])
         else
             $par.append($el)
