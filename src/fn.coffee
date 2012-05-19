@@ -1,3 +1,4 @@
+{ $fyBuilder } = require './util'
 
 module.exports =
 
@@ -7,19 +8,21 @@ module.exports =
         if parent is parent.builder
             i = $par.length - 1
             $par = $par.add($el)
-            if parent._jquery_wrapped # FIXME
+            if parent._browser.wrapped # FIXME
                 $par.first().replaceWith($el)
                 if parent.parent is parent.parent?.builder # FIXME recursive?
                     $parpar = parent.parent?._jquery
-                    parent._jquery_wrapped = no
+                    parent._browser.wrapped = no
                     $par = $par.not(':first') # rm placeholder span
                     $parpar?.splice($parpar.index($par), i+1, $par...)
+                    $fyBuilder(parent.parent) if parent.parent?
             else if $par.parent().length > 0
                 $el.insertAfter($par[i])
         else
             $par.append($el)
         # $.add isnt inplace
         parent._jquery = $par
+        $fyBuilder(parent) if parent is parent.builder
 
     replace: (oldtag, newtag) ->
         parent = newtag.parent
@@ -34,6 +37,7 @@ module.exports =
             $old.replaceWith($new)
         # $.replaceWith isnt inplace
         newtag._jquery = $new
+        $fyBuilder(newtag) if newtag is newtag.builder
 
     text: (el, text) ->
         el._jquery.text(text)

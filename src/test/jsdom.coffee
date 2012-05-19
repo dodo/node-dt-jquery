@@ -51,7 +51,7 @@ module.exports =
                         @$p "bar"
                 process.nextTick ->
                     æ.equal 1, t.jquery.length
-                    æ.equal 0, t.jquery.filter('spaceholder').length
+                    æ.equal 0, t.jquery.filter('placeholder').length
                 æ.equal "42#{tpl is t.xml?.parent?.builder?.template}",
                         "42true"
                 t.ready =>
@@ -66,7 +66,7 @@ module.exports =
                         @$p "foo"
                 process.nextTick ->
                     æ.equal 1, t.jquery.length
-                    æ.equal 0, t.jquery.filter('spaceholder').length
+                    æ.equal 0, t.jquery.filter('placeholder').length
                 æ.equal "23#{tpl is t.xml?.parent?.builder?.template}",
                         "23true"
                 t.ready =>
@@ -97,7 +97,7 @@ module.exports =
                             @$p "foo"
                     process.nextTick ->
                         æ.equal 1, t.jquery.length
-                        æ.equal 0, t.jquery.filter('spaceholder').length
+                        æ.equal 0, t.jquery.filter('placeholder').length
                     æ.equal "16#{tpl is t.xml?.parent?.builder?.template}",
                             "16true"
                     t.ready =>
@@ -128,7 +128,7 @@ module.exports =
 
                 process.nextTick ->
                     æ.equal 1, foo._jquery.length
-                    æ.equal 0, foo._jquery.filter('spaceholder').length
+                    æ.equal 0, foo._jquery.filter('placeholder').length
                 æ.equal "37#{tpl is foo.builder?.template}",
                         "37true"
                 foo.ready =>
@@ -156,7 +156,7 @@ module.exports =
                         @$p "foo"
                 process.nextTick ->
                     æ.equal 1, t.jquery.length
-                    æ.equal 0, t.jquery.filter('spaceholder').length
+                    æ.equal 0, t.jquery.filter('placeholder').length
                 æ.equal "9#{tpl is t.xml?.parent?.builder?.template}",
                         "9true"
                 t.ready =>
@@ -185,7 +185,7 @@ module.exports =
                     adds.should++
                 process.nextTick ->
                     æ.equal 1, t.jquery.length
-                    æ.equal 0, t.jquery.filter('spaceholder').length
+                    æ.equal 0, t.jquery.filter('placeholder').length
                 æ.equal "8#{tpl is t.xml?.parent?.builder?.template}",
                         "8true"
                 t.ready =>
@@ -207,7 +207,7 @@ module.exports =
                         adds.should += 2
                 process.nextTick ->
                     æ.equal 2, t.jquery.length
-                    æ.equal 0, t.jquery.filter('spaceholder').length
+                    æ.equal 0, t.jquery.filter('placeholder').length
                 æ.equal "13#{footer is t.xml?.parent?.builder?.template}",
                         "13true"
                 t.ready =>
@@ -256,7 +256,7 @@ module.exports =
                         @$b "bar"
                 process.nextTick ->
                     æ.equal 1, t.jquery.length
-                    æ.equal 0, t.jquery.filter('spaceholder').length
+                    æ.equal 0, t.jquery.filter('placeholder').length
                 æ.equal "3#{tpl is t.xml?.parent?.builder?.template}",
                         "3true"
                 t.ready =>
@@ -307,7 +307,7 @@ module.exports =
                         adds.should += 2
                     process.nextTick ->
                         æ.equal 1, t.jquery.length
-                        æ.equal 0, t.jquery.filter('spaceholder').length
+                        æ.equal 0, t.jquery.filter('placeholder').length
                     æ.equal "7#{tpl is t.xml?.parent?.builder?.template}",
                             "7true"
                     t.ready =>

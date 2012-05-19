@@ -1,6 +1,5 @@
 { Adapter:BrowserAdapter } = require 'dt-browser'
-{ defineJQueryAPI, $fyBuilder,
-  createSpaceholder } = require './util'
+{ defineJQueryAPI, $fyBuilder } = require './util'
 defaultfn = require './fn'
 
 # TODO listen on data and use innerHTML to create all dom elems at once
@@ -53,6 +52,20 @@ class JQueryAdapter extends BrowserAdapter
             el._jquery ?= @$(el.toString(), el.parent?._jquery)
             defineJQueryAPI(el)
 
+    createPlaceholder: (el) ->
+        el._jquery = @$('<placeholder>', el.parent._jquery)
+        if el is el.builder
+            $fyBuilder(el) # includes defineJQueryAPI
+        else
+            defineJQueryAPI(el)
+
+    removePlaceholder: (el) ->
+        el._jquery = el._jquery.not(':first') # rm placeholder
+        if el is el.builder
+            $fyBuilder(el) # includes defineJQueryAPI
+        else
+            defineJQueryAPI(el)
+
     # flow control : eventlisteners
 
     onshow: (el) ->
@@ -70,25 +83,6 @@ class JQueryAdapter extends BrowserAdapter
         @template.jquery = @template._jquery = @builder._jquery
         defineJQueryAPI(@template)
 
-    # ready callbacks
-
-    insert_callback: (el) -> # the best i could do :(
-        if el._jquery.length is 0
-            createSpaceholder.call(this, el, el.parent._jquery)
-        @fn.add(el.parent, el) # part of dt-browser
-        if el.parent._jquery_wrapped
-            el.parent._jquery_wrapped = no
-            el.parent._jquery = el.parent._jquery.not(':first') # rm placeholder span
-        $fyBuilder(el.parent) if el.parent is el.parent.builder
-        el._browser.ready?(el)   # part of dt-browser
-        el._browser.ready  = yes # part of dt-browser
-        el._browser.insert = yes # part of dt-browser
-
-    replace_callback: (oldtag, newtag) ->
-        if newtag._jquery.length is 0
-            createSpaceholder.call(this, newtag, newtag.parent._jquery)
-        super
-        $fyBuilder(newtag) if newtag is newtag.builder
 
 
 jqueryify = (opts, tpl) ->
