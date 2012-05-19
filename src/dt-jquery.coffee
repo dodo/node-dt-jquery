@@ -54,17 +54,11 @@ class JQueryAdapter extends BrowserAdapter
 
     createPlaceholder: (el) ->
         el._jquery = @$('<placeholder>', el.parent._jquery)
-        if el is el.builder
-            $fyBuilder(el) # includes defineJQueryAPI
-        else
-            defineJQueryAPI(el)
+        $fyBuilder(el) # includes defineJQueryAPI
 
     removePlaceholder: (el) ->
         el._jquery = el._jquery.not(':first') # rm placeholder
-        if el is el.builder
-            $fyBuilder(el) # includes defineJQueryAPI
-        else
-            defineJQueryAPI(el)
+        $fyBuilder(el) # includes defineJQueryAPI
 
     # flow control : eventlisteners
 
