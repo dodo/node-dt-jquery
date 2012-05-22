@@ -1,4 +1,3 @@
-{ $fyBuilder } = require './util'
 
 module.exports =
 
@@ -15,14 +14,12 @@ module.exports =
                     parent._browser.wrapped = no
                     $par = $par.not(':first') # rm placeholder span
                     $parpar?.splice($parpar.index($par), i+1, $par...)
-                    $fyBuilder(parent.parent) if parent.parent?
             else if parent._browser.insert is true
                 $el.insertAfter($par[i])
         else
             $par.append($el)
         # $.add isnt inplace
         parent._jquery = $par
-        $fyBuilder(parent) if parent is parent.builder
 
     replace: (oldtag, newtag) ->
         parent = newtag.parent
@@ -37,7 +34,6 @@ module.exports =
             $old.replaceWith($new)
         # $.replaceWith isnt inplace
         newtag._jquery = $new
-        $fyBuilder(newtag) if newtag is newtag.builder
 
     text: (el, text) ->
         el._jquery.text(text)

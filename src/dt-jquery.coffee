@@ -1,5 +1,4 @@
 { Adapter:BrowserAdapter } = require 'dt-browser'
-{ defineJQueryAPI, $fyBuilder } = require './util'
 defaultfn = require './fn'
 
 # TODO listen on data and use innerHTML to create all dom elems at once
@@ -8,6 +7,20 @@ defaultfn = require './fn'
 # TODO listen for dom events to know when a dom manipulation is ready
 # TODO browser render ticks are available via canvas tag
 # TODO cache css values: http://www.youtube.com/watch?v=Vp524yo0p44
+
+defineJQueryAPI = (el) ->
+    # let $(el) work magically
+    el.__defineGetter__('selector', -> el._jquery.selector)
+    el.__defineGetter__('context',  -> el._jquery.context )
+
+
+$fyBuilder = (builder) ->
+    $builder = builder._jquery
+    builder.jquery = $builder
+    builder.template.jquery = $builder
+    builder.template._jquery = $builder
+    defineJQueryAPI(builder.template)
+    defineJQueryAPI(builder)
 
 
 class JQueryAdapter extends BrowserAdapter
@@ -18,6 +31,7 @@ class JQueryAdapter extends BrowserAdapter
         for n,f of defaultfn
             @fn[n] ?= f.bind(this)
         super
+        do @patch_fn
 
     initialize: () ->
         super
@@ -43,6 +57,25 @@ class JQueryAdapter extends BrowserAdapter
                             @end()
                     else
                         old_query.call(this, type, tag, key)
+
+    # append some $fyBuilder to some fn methods
+
+    patch_fn: ->
+        # TODO somehow prevent this code injection
+        fnadd = @fn.add
+        @fn.add = (parent, el) ->
+            res = fnadd(parent, el)
+            parpar = parent.parent
+            $fyBuilder(parpar) if parpar? and parpar is parpar.builder
+            $fyBuilder(parent) if parent is parent.builder
+            return res
+        fnreplace = @fn.replace
+        @fn.replace = (oldtag, newtag) ->
+            res = fnreplace(oldtag, newtag)
+            $fyBuilder(newtag) if newtag is newtag.builder
+            return res
+
+    # overwrite dt-browser dummies
 
     make: (el) ->
         if el is el.builder
