@@ -4,7 +4,9 @@ This is an [jQuery](http://jquery.com/) Adapter for [Δt](http://dodo.github.com
 
 It listen on the [template events](http://dodo.github.com/node-asyncxml/#section-4) and writes to the DOM.
 
-→ [Check out the demo!](http://dodo.github.com/node-dynamictemplate/example/list.html)
+The core logic is implemented in it's [module](http://github.com/dodo/node-dt-browser) to share it with other browser based adapters like [dt-DOM](http://dodo.github.com/node-dt-dom)
+
+→ [Check out the demo!](http://dodo.github.com/node-dynamictemplate/example/backbone.html)
 
 ## Installation
 
