@@ -58,3 +58,8 @@ module.exports =
             el._jquery.detach()
         else
             el._jquery.remove()
+            parent = el.parent
+            $par = parent._jquery
+            $el = el._jquery
+            if parent is parent.builder
+                $par.splice($par.index($el), $el.length)
