@@ -58,6 +58,7 @@ module.exports =
             el._jquery.detach()
         else
             el._jquery.remove()
+            return unless el.parent?
             parent = el.parent
             $par = parent._jquery
             $el = el._jquery
