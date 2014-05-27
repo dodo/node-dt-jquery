@@ -33,30 +33,27 @@ class JQueryAdapter extends BrowserAdapter
         super
         do @patch_fn
 
-    initialize: () ->
-        super
-        # override query
-        old_query = @builder.query
-        @builder.query = (type, tag, key) ->
-            return old_query.call(this, type, tag, key) unless tag._jquery?
-            if type is 'attr'
-                tag._jquery.attr(key)
-            else if type is 'text'
-                tag._jquery.text()
-            else if type is 'tag'
-                if key._jquery?
-                    key
+    # override builder.query
+    query: (type, tag, key, old_query) ->
+        return old_query.call(this, type, tag, key) unless tag._jquery?
+        if type is 'attr'
+            tag._jquery.attr(key)
+        else if type is 'text'
+            tag._jquery.text()
+        else if type is 'tag'
+            if key._jquery?
+                key
+            else
+                # assume this is already a jquery object
+                if (domel = key[0])?
+                    attrs = {}
+                    for attr in domel.attributes
+                        attrs[attr.name] = attr.value
+                    new @builder.Tag domel.nodeName.toLowerCase(), attrs, ->
+                        @_jquery = key
+                        @end()
                 else
-                    # assume this is already a jquery object
-                    if (domel = key[0])?
-                        attrs = {}
-                        for attr in domel.attributes
-                            attrs[attr.name] = attr.value
-                        new @builder.Tag domel.nodeName.toLowerCase(), attrs, ->
-                            @_jquery = key
-                            @end()
-                    else
-                        old_query.call(this, type, tag, key)
+                    old_query.call(this, type, tag, key)
 
     # append some $fyBuilder to some fn methods
 
