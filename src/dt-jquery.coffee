@@ -31,6 +31,7 @@ class JQueryAdapter extends BrowserAdapter
         for n,f of defaultfn
             @fn[n] ?= f.bind(this)
         super
+        @builder.adapters['jquery'] = this
         do @patch_fn
 
     # override builder.query
