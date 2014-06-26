@@ -1,5 +1,5 @@
 { EventEmitter } = require 'events'
-jQuery = require 'jquery'
+jQuery = require 'jQuery'
 jqueryify = require '../dt-jquery'
 { Template } = require 'dynamictemplate'
 
