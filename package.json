@@ -11,7 +11,7 @@
     "test": "cake build && nodeunit test",
     "prepublish": "cake build"}
 , "dependencies": {
-    "dt-browser": ">= 0.0.6"}
+    "dt-browser": ">= 0.1.0"}
 , "devDependencies": {
     "dynamictemplate": "0.5.2",
     "jQuery": "1.7.3",
